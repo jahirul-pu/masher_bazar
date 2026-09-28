@@ -1,0 +1,12 @@
+{
+  "extends": "@masik/config-typescript/react-native.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}

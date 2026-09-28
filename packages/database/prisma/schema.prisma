@@ -1,0 +1,589 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  CUSTOMER
+  SUPER_ADMIN
+  OPERATIONS
+  INVENTORY_MANAGER
+  PROCUREMENT_MANAGER
+  CUSTOMER_SUPPORT
+  DELIVERY_RIDER
+}
+
+enum CustomerSegment {
+  NEW
+  ACTIVE
+  LOYAL
+  AT_RISK
+  CHURNED
+}
+
+enum CookingFrequency {
+  ALMOST_EVERY_DAY
+  FOUR_TO_FIVE_DAYS
+  TWO_TO_THREE_DAYS
+  OCCASIONALLY
+}
+
+enum FoodPreference {
+  STANDARD
+  RICE_HEAVY
+  ROTI_HEAVY
+  MIXED
+}
+
+enum MarketTier {
+  BASIC
+  FAMILY
+  PREMIUM
+}
+
+enum ProductUnit {
+  KG
+  GRAM
+  LITER
+  ML
+  PCS
+  PACK
+}
+
+enum SubstitutionType {
+  DIRECT_EQUIVALENT
+  ECONOMY_SAVER
+  PREMIUM_UPGRADE
+}
+
+enum BasketType {
+  RECOMMENDED
+  CUSTOM
+  SUBSCRIPTION_DRAFT
+  REORDER
+}
+
+enum SubscriptionType {
+  SAME_BASKET
+  SMART_BASKET
+  CUSTOM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAUSED
+  SKIPPED
+  CANCELLED
+  PAYMENT_FAILED
+}
+
+enum OrderStatus {
+  DRAFT
+  PLACED
+  CONFIRMED
+  PAYMENT_PENDING
+  PAID
+  PICKING
+  PACKED
+  DISPATCHED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  RETURN_REQUESTED
+  RETURNED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  COD
+  BKASH
+  NAGAD
+  CARD_SSLCOMMERZ
+  MARKET_CREDITS
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum PickingBatchStatus {
+  GENERATED
+  PICKING
+  PICKED
+  PACKED
+}
+
+enum POStatus {
+  DRAFT
+  SENT
+  PARTIALLY_RECEIVED
+  COMPLETED
+  CANCELLED
+}
+
+enum CreditTransactionType {
+  ORDER_CASHBACK
+  REFERRAL_BONUS
+  MANUAL_ADJUSTMENT
+  ORDER_REDEMPTION
+}
+
+// ---------------------------------------------
+// 1. Auth & Profiles
+// ---------------------------------------------
+
+model User {
+  id           String          @id @default(uuid())
+  phone        String          @unique
+  email        String?         @unique
+  passwordHash String?
+  fullName     String
+  role         UserRole        @default(CUSTOMER)
+  isActive     Boolean         @default(true)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  customerProfile CustomerProfile?
+  addresses       Address[]
+  notifications   Notification[]
+}
+
+model CustomerProfile {
+  id              String          @id @default(uuid())
+  userId          String          @unique
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  loyaltyCredits  Float           @default(0)
+  referralCode    String          @unique
+  referredById    String?
+  lifetimeSpend   Float           @default(0)
+  lifetimeSavings Float           @default(0)
+  segment         CustomerSegment @default(NEW)
+  salaryPayday    Int?            @default(1) // 1-31
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  households      Household[]
+  creditLedgers   MarketCreditLedger[]
+}
+
+model Address {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label        String   @default("Home")
+  addressLine  String
+  areaZoneId   String
+  deliveryZone DeliveryZone @relation(fields: [areaZoneId], references: [id])
+  thana        String
+  district     String   @default("Dhaka")
+  isDefault    Boolean  @default(false)
+  latitude     Float?
+  longitude    Float?
+  createdAt    DateTime @default(now())
+
+  orders       Order[]
+  households   Household[]
+}
+
+// ---------------------------------------------
+// 2. Household
+// ---------------------------------------------
+
+model Household {
+  id                   String           @id @default(uuid())
+  customerId           String
+  customer             CustomerProfile  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  householdName        String           @default("My Family")
+  householdSize        Int              @default(4)
+  adultCount           Int              @default(2)
+  childCount           Int              @default(2)
+  elderlyCount         Int              @default(0)
+  cookingFrequency     CookingFrequency @default(ALMOST_EVERY_DAY)
+  foodPreference       FoodPreference   @default(STANDARD)
+  defaultMonthlyBudget Float            @default(6000)
+  marketTier           MarketTier       @default(FAMILY)
+  defaultAddressId     String?
+  defaultAddress       Address?         @relation(fields: [defaultAddressId], references: [id])
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  baskets              Basket[]
+  subscriptions        Subscription[]
+  orders               Order[]
+  priceLocks           PriceLockContract[]
+}
+
+// ---------------------------------------------
+// 3. Products & Catalog
+// ---------------------------------------------
+
+model Category {
+  id           String    @id @default(uuid())
+  nameEn       String
+  nameBn       String
+  slug         String    @unique
+  icon         String?
+  displayOrder Int       @default(0)
+  products     Product[]
+}
+
+model Brand {
+  id             String    @id @default(uuid())
+  name           String    @unique
+  isPrivateLabel Boolean   @default(false)
+  logoUrl        String?
+  products       Product[]
+}
+
+model Product {
+  id            String           @id @default(uuid())
+  nameEn        String
+  nameBn        String
+  slug          String           @unique
+  categoryId    String
+  category      Category         @relation(fields: [categoryId], references: [id])
+  brandId       String
+  brand         Brand            @relation(fields: [brandId], references: [id])
+  descriptionEn String?
+  descriptionBn String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  variants      ProductVariant[]
+}
+
+model ProductVariant {
+  id                     String           @id @default(uuid())
+  productId              String
+  product                Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku                    String           @unique
+  barcode                String?          @unique
+  nameEn                 String
+  nameBn                 String
+  unit                   ProductUnit
+  unitValue              Float
+  mrp                    Float            // Market price
+  masikPrice             Float            // Platform selling price
+  purchaseCost           Float            // Internal cost
+  minMarginPercent       Float            @default(8.0)
+  isSubscriptionEligible Boolean          @default(true)
+  isPrivateLabel         Boolean          @default(false)
+  images                 String[]
+  stockAvailable         Int              @default(0)
+  isActive               Boolean          @default(true)
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+
+  basketItems            BasketItem[]
+  orderItems             OrderItem[]
+  inventoryBatches       InventoryBatch[]
+  supplierProducts       SupplierProduct[]
+  substitutesAsPrimary   ProductSubstitution[] @relation("PrimaryVariant")
+  substitutesAsSub       ProductSubstitution[] @relation("SubstituteVariant")
+}
+
+model ProductSubstitution {
+  id                  String           @id @default(uuid())
+  primaryVariantId    String
+  primaryVariant      ProductVariant   @relation("PrimaryVariant", fields: [primaryVariantId], references: [id], onDelete: Cascade)
+  substituteVariantId String
+  substituteVariant   ProductVariant   @relation("SubstituteVariant", fields: [substituteVariantId], references: [id], onDelete: Cascade)
+  type                SubstitutionType @default(ECONOMY_SAVER)
+  priceDelta          Float            // negative saves money
+
+  @@unique([primaryVariantId, substituteVariantId])
+}
+
+// ---------------------------------------------
+// 4. Basket & Subscriptions
+// ---------------------------------------------
+
+model Basket {
+  id                 String     @id @default(uuid())
+  householdId        String
+  household          Household  @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  basketType         BasketType @default(RECOMMENDED)
+  totalMasikPrice    Float      @default(0)
+  totalMarketPrice   Float      @default(0)
+  totalSavings       Float      @default(0)
+  savingsPercentage  Float      @default(0)
+  isBudgetOptimized  Boolean    @default(false)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  items              BasketItem[]
+}
+
+model BasketItem {
+  id             String         @id @default(uuid())
+  basketId       String
+  basket         Basket         @relation(fields: [basketId], references: [id], onDelete: Cascade)
+  variantId      String
+  variant        ProductVariant @relation(fields: [variantId], references: [id])
+  quantity       Int            @default(1)
+  isRecurring    Boolean        @default(true)
+  unitMasikPrice Float
+  unitMrp        Float
+}
+
+model Subscription {
+  id                  String             @id @default(uuid())
+  householdId         String
+  household           Household          @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  type                SubscriptionType   @default(SAME_BASKET)
+  status              SubscriptionStatus @default(ACTIVE)
+  deliveryDayOfMonth  Int                @default(3) // 1-31
+  deliverySlotId      String
+  deliverySlot        DeliverySlot       @relation(fields: [deliverySlotId], references: [id])
+  paymentMethodToken  String?
+  priceLockActiveUntil DateTime?
+  nextBillingDate     DateTime
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  priceLockContracts  PriceLockContract[]
+}
+
+model PriceLockContract {
+  id                String       @id @default(uuid())
+  subscriptionId    String
+  subscription      Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  householdId       String
+  household         Household    @relation(fields: [householdId], references: [id])
+  lockedTotalAmount Float
+  lockedUntilDate   DateTime
+  itemSnapshotJson  Json
+  isActive          Boolean      @default(true)
+  createdAt         DateTime     @default(now())
+}
+
+// ---------------------------------------------
+// 5. Orders & Logistics
+// ---------------------------------------------
+
+model DeliveryZone {
+  id             String         @id @default(uuid())
+  name           String         @unique // Gulshan, Banani, Uttara, Dhanmondi, Mirpur, Savar
+  baseDeliveryFee Float         @default(60)
+  minOrderAmount Float          @default(1500)
+  isActive       Boolean        @default(true)
+
+  slots          DeliverySlot[]
+  addresses      Address[]
+}
+
+model DeliverySlot {
+  id              String        @id @default(uuid())
+  zoneId          String
+  zone            DeliveryZone  @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  title           String        // "9 AM – 12 PM"
+  startTime       String
+  endTime         String
+  maxOrdersPerDay Int           @default(100)
+  isActive        Boolean       @default(true)
+
+  orders          Order[]
+  subscriptions   Subscription[]
+  pickingBatches  PickingBatch[]
+}
+
+model Order {
+  id             String        @id @default(uuid())
+  orderNumber    String        @unique // MB-2026-10001
+  householdId    String
+  household      Household     @relation(fields: [householdId], references: [id])
+  addressId      String
+  address        Address       @relation(fields: [addressId], references: [id])
+  status         OrderStatus   @default(PLACED)
+  subtotal       Float
+  deliveryFee    Float         @default(0)
+  discount       Float         @default(0)
+  creditsUsed    Float         @default(0)
+  grandTotal     Float
+  totalSavings   Float         @default(0)
+  paymentMethod  PaymentMethod @default(COD)
+  paymentStatus  PaymentStatus @default(PENDING)
+  deliverySlotId String
+  deliverySlot   DeliverySlot  @relation(fields: [deliverySlotId], references: [id])
+  deliveryDate   DateTime
+  priceLocked    Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  items          OrderItem[]
+  statusHistory  OrderStatusHistory[]
+}
+
+model OrderItem {
+  id            String         @id @default(uuid())
+  orderId       String
+  order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId     String
+  variant       ProductVariant @relation(fields: [variantId], references: [id])
+  productNameEn String
+  productNameBn String
+  quantity      Int
+  unitPrice     Float
+  referenceMrp  Float
+  totalPrice    Float
+  totalSavings  Float
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(uuid())
+  orderId   String
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus
+  note      String?
+  createdAt DateTime    @default(now())
+}
+
+// ---------------------------------------------
+// 6. WMS & Inventory
+// ---------------------------------------------
+
+model Warehouse {
+  id               String           @id @default(uuid())
+  name             String
+  location         String
+  isActive         Boolean          @default(true)
+
+  batches          InventoryBatch[]
+  pickingBatches   PickingBatch[]
+  purchaseOrders   PurchaseOrder[]
+}
+
+model InventoryBatch {
+  id             String         @id @default(uuid())
+  warehouseId    String
+  warehouse      Warehouse      @relation(fields: [warehouseId], references: [id])
+  variantId      String
+  variant        ProductVariant @relation(fields: [variantId], references: [id])
+  batchNumber    String
+  mfgDate        DateTime?
+  expiryDate     DateTime?
+  purchaseCost   Float
+  physicalStock  Int            @default(0)
+  reservedStock  Int            @default(0)
+  availableStock Int            @default(0)
+  locationBin    String         @default("A1-01") // Aisle-Shelf
+  createdAt      DateTime       @default(now())
+}
+
+model PickingBatch {
+  id             String             @id @default(uuid())
+  batchCode      String             @unique
+  warehouseId    String
+  warehouse      Warehouse          @relation(fields: [warehouseId], references: [id])
+  deliverySlotId String
+  deliverySlot   DeliverySlot       @relation(fields: [deliverySlotId], references: [id])
+  deliveryDate   DateTime
+  status         PickingBatchStatus @default(GENERATED)
+  assignedPicker String?
+  manifestJson   Json               // aggregated picking list
+  createdAt      DateTime           @default(now())
+}
+
+// ---------------------------------------------
+// 7. Suppliers & Procurement
+// ---------------------------------------------
+
+model Supplier {
+  id               String            @id @default(uuid())
+  name             String
+  contactPerson    String
+  phone            String
+  email            String?
+  leadTimeDays     Int               @default(2)
+  paymentTerms     String            @default("Net 15")
+  reliabilityScore Float             @default(95.0)
+  isActive         Boolean           @default(true)
+
+  supplierProducts SupplierProduct[]
+  purchaseOrders   PurchaseOrder[]
+}
+
+model SupplierProduct {
+  id          String         @id @default(uuid())
+  supplierId  String
+  supplier    Supplier       @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  variantId   String
+  variant     ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  supplyCost  Float
+  moq         Int            @default(10)
+  isPreferred Boolean        @default(false)
+
+  @@unique([supplierId, variantId])
+}
+
+model PurchaseOrder {
+  id                   String              @id @default(uuid())
+  poNumber             String              @unique
+  supplierId           String
+  supplier             Supplier            @relation(fields: [supplierId], references: [id])
+  warehouseId          String
+  warehouse            Warehouse           @relation(fields: [warehouseId], references: [id])
+  status               POStatus            @default(DRAFT)
+  totalCost            Float
+  expectedDeliveryDate DateTime
+  createdAt            DateTime            @default(now())
+
+  items                PurchaseOrderItem[]
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(uuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  variantId       String
+  quantity        Int
+  unitCost        Float
+  totalCost       Float
+}
+
+// ---------------------------------------------
+// 8. Credits, Referrals, B2B & Notifications
+// ---------------------------------------------
+
+model MarketCreditLedger {
+  id           String                @id @default(uuid())
+  customerId   String
+  customer     CustomerProfile       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  amount       Float
+  balanceAfter Float
+  type         CreditTransactionType
+  referenceId  String?
+  note         String?
+  createdAt    DateTime              @default(now())
+}
+
+model B2BAccount {
+  id                String   @id @default(uuid())
+  companyName       String
+  binNumber         String   @unique
+  contactPerson     String
+  contactPhone      String
+  creditLimit       Float    @default(50000)
+  currentCreditUsed Float    @default(0)
+  paymentCycleDays  Int      @default(30)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  body      String
+  channel   String   @default("PUSH") // SMS, WHATSAPP, PUSH, IN_APP
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

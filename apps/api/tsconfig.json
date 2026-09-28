@@ -1,0 +1,12 @@
+{
+  "extends": "@masik/config-typescript/node.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": false,
+    "declarationMap": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "include": ["src/**/*"]
+}

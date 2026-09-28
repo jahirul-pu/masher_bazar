@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Masik Bazar (মাসিক বাজার)",
+    "slug": "masik-bazar",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#064e3b"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.masikbazar.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#064e3b"
+      },
+      "package": "com.masikbazar.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
