@@ -9,6 +9,9 @@ import { PaymentsModule } from './payments/payments.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { WmsModule } from './wms/wms.module';
 import { AiModule } from './ai/ai.module';
+import { ConsumptionModule } from './consumption/consumption.module';
+import { LoyaltyModule } from './loyalty/loyalty.module';
+import { B2BModule } from './b2b/b2b.module';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { AiModule } from './ai/ai.module';
     SubscriptionsModule,
     WmsModule,
     AiModule,
+    ConsumptionModule,
+    LoyaltyModule,
+    B2BModule,
   ],
 })
 export class AppModule {}

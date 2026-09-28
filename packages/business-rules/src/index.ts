@@ -221,3 +221,116 @@ export function validateMarginProtection(
     currentMarginPercent: Math.round(currentMarginPercent * 10) / 10,
   };
 }
+
+/**
+ * 5. Intelligent Missing Product Detection Engine (Section 21 PRD)
+ * Compares current basket contents against historical high-frequency staples.
+ * If a customer normally buys an item in >= 60% of past monthly markets, but it's
+ * missing in the current draft, generates an intelligent alert.
+ */
+export interface HistoricalStapleProfile {
+  variantId: string;
+  nameEn: string;
+  nameBn: string;
+  category: string;
+  unitMasikPrice: number;
+  unitMrp: number;
+  purchaseFrequencyPercent: number; // e.g. 85%
+  typicalQuantity: number;
+}
+
+export function detectMissingStaples(
+  currentBasketVariantIds: string[],
+  historicalStaples: HistoricalStapleProfile[]
+): {
+  missingStaples: HistoricalStapleProfile[];
+  alertMessageBn?: string;
+  alertMessageEn?: string;
+} {
+  const presentSet = new Set(currentBasketVariantIds);
+  const missing = historicalStaples.filter(
+    (h) => h.purchaseFrequencyPercent >= 60 && !presentSet.has(h.variantId)
+  );
+
+  if (missing.length === 0) {
+    return { missingStaples: [] };
+  }
+
+  const first = missing[0];
+  return {
+    missingStaples: missing,
+    alertMessageBn: `আপনি সাধারণত প্রতি মাসে "${first.nameBn}" কিনে থাকেন। এই বাজারের তালিকায় কি যোগ করতে চান?`,
+    alertMessageEn: `You usually buy "${first.nameEn}" with your monthly market. Would you like to add it?`,
+  };
+}
+
+/**
+ * 6. Household Consumption Prediction Engine (Section 22 PRD)
+ * Calculates moving-average consumption cycles and predicts estimated depletion dates.
+ */
+export interface PurchaseRecord {
+  variantId: string;
+  productNameEn: string;
+  productNameBn: string;
+  quantity: number;
+  purchasedAt: string; // ISO date
+}
+
+export function predictDepletionDate(
+  records: PurchaseRecord[],
+  currentDate: Date = new Date()
+): {
+  variantId: string;
+  productNameEn: string;
+  productNameBn: string;
+  avgCycleDays: number;
+  estimatedDepletionDate: string;
+  isRunningLow: boolean;
+  daysRemaining: number;
+}[] {
+  // Group purchases by variantId
+  const grouped = new Map<string, PurchaseRecord[]>();
+  for (const r of records) {
+    const list = grouped.get(r.variantId) || [];
+    list.push(r);
+    grouped.set(r.variantId, list);
+  }
+
+  const results = [];
+
+  for (const [variantId, list] of grouped.entries()) {
+    if (list.length < 2) continue; // Need at least 2 points for a cycle
+
+    // Sort ascending by date
+    list.sort((a, b) => new Date(a.purchasedAt).getTime() - new Date(b.purchasedAt).getTime());
+
+    let totalIntervalDays = 0;
+    for (let i = 1; i < list.length; i++) {
+      const prev = new Date(list[i - 1].purchasedAt).getTime();
+      const curr = new Date(list[i].purchasedAt).getTime();
+      totalIntervalDays += (curr - prev) / (1000 * 60 * 60 * 24);
+    }
+
+    const avgCycleDays = Math.round(totalIntervalDays / (list.length - 1));
+    const lastPurchaseDate = new Date(list[list.length - 1].purchasedAt);
+    const estimatedDepletion = new Date(lastPurchaseDate);
+    estimatedDepletion.setDate(estimatedDepletion.getDate() + avgCycleDays);
+
+    const diffDays = Math.round(
+      (estimatedDepletion.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    results.push({
+      variantId,
+      productNameEn: list[0].productNameEn,
+      productNameBn: list[0].productNameBn,
+      avgCycleDays,
+      estimatedDepletionDate: estimatedDepletion.toISOString().split('T')[0],
+      isRunningLow: diffDays <= 5,
+      daysRemaining: diffDays,
+    });
+  }
+
+  return results;
+}
+

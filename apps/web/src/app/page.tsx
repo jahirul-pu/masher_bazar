@@ -6,7 +6,10 @@ import { Hero } from '@/components/Hero';
 import { OnboardingWizard, OnboardingState } from '@/components/OnboardingWizard';
 import { BasketDisplay, DisplayBasketItem } from '@/components/BasketDisplay';
 import { SavingsDashboard } from '@/components/SavingsDashboard';
+import { MealPlanner } from '@/components/MealPlanner';
+import { B2bCorporateMess } from '@/components/B2bCorporateMess';
 import { Footer } from '@/components/Footer';
+import { Home, ChefHat, Building2 } from 'lucide-react';
 import { CookingFrequency, FoodPreference, MarketTier } from '@masik/shared-types';
 
 export default function HomePage() {
@@ -277,6 +280,60 @@ export default function HomePage() {
     window.scrollTo({ top: 750, behavior: 'smooth' });
   };
 
+  // Add Item to Basket (e.g. from Missing Staple Alert)
+  const handleAddItem = (newItem: DisplayBasketItem) => {
+    setBasketItems((prev) => {
+      const exists = prev.find((i) => i.variantId === newItem.variantId);
+      if (exists) {
+        return prev.map((i) => (i.variantId === newItem.variantId ? { ...i, quantity: i.quantity + 1 } : i));
+      }
+      return [newItem, ...prev];
+    });
+  };
+
+  // Meal Planner Calculation Handler (Section 67 PRD)
+  const handleGenerateFromMealPlan = (needs: {
+    riceKg: number;
+    oilLiters: number;
+    dalKg: number;
+    attaKg: number;
+  }) => {
+    setBasketItems((prev) =>
+      prev.map((item) => {
+        if (item.variantId === 'v-rice-chashi-25k' || item.variantId === 'v-rice-mb-25k') {
+          const sacks = Math.max(1, Math.ceil(needs.riceKg / 25));
+          return { ...item, quantity: sacks };
+        }
+        if (item.variantId === 'v-oil-rup-5l' || item.variantId === 'v-oil-mb-5l') {
+          const bottles = Math.max(1, Math.ceil(needs.oilLiters / 5));
+          return { ...item, quantity: bottles };
+        }
+        if (item.variantId === 'v-dal-aci-2k' || item.variantId === 'v-dal-mb-2k') {
+          const packs = Math.max(1, Math.ceil(needs.dalKg / 2));
+          return { ...item, quantity: packs };
+        }
+        if (item.variantId === 'v-flour-fresh-5k') {
+          const packs = Math.max(1, Math.ceil(needs.attaKg / 5));
+          return { ...item, quantity: packs };
+        }
+        return item;
+      })
+    );
+    const basketEl = document.getElementById('basket-section');
+    if (basketEl) basketEl.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Mess Bulk Basket Handler (Section 70 PRD)
+  const handleApplyMessBasket = (messItems: DisplayBasketItem[]) => {
+    setBasketItems(messItems);
+    const total = messItems.reduce((acc, i) => acc + i.unitMasikPrice * i.quantity, 0);
+    setOnboarding((prev) => ({ ...prev, budget: total + 1000, size: 6 }));
+    const basketEl = document.getElementById('basket-section');
+    if (basketEl) basketEl.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const [plannerMode, setPlannerMode] = useState<'household' | 'meal_planner' | 'mess_b2b'>('household');
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
       <div>
@@ -300,25 +357,88 @@ export default function HomePage() {
 
         {/* Core Interactive Section */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12">
-          {/* Step 1: Onboarding Wizard */}
-          <OnboardingWizard
-            lang={lang}
-            state={onboarding}
-            onChange={(updates) => setOnboarding((prev) => ({ ...prev, ...updates }))}
-            onGenerate={handleGenerateFromOnboarding}
-          />
+          {/* Planner Mode Switcher Tabs */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
+            <span className="text-xs font-bold text-slate-500 px-3 uppercase tracking-wider">
+              {lang === 'bn' ? 'বাজার পরিকল্পনা মোড নির্বাচন করুন:' : 'Select Planning Mode:'}
+            </span>
+            <div className="flex flex-wrap gap-1.5 w-full sm:w-auto">
+              <button
+                onClick={() => setPlannerMode('household')}
+                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                  plannerMode === 'household'
+                    ? 'bg-masik-700 text-white shadow-md'
+                    : 'text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                <Home className="w-4 h-4" />
+                <span>{lang === 'bn' ? 'পারিবারিক অনবোর্ডিং' : 'Household Wizard'}</span>
+              </button>
 
-          {/* Step 2 & 3: Basket Display with Budget Optimization & Checkout */}
-          <BasketDisplay
-            lang={lang}
-            items={basketItems}
-            budget={onboarding.budget}
-            onUpdateQty={handleUpdateQty}
-            onRemoveItem={handleRemoveItem}
-            onOptimizeBudget={handleOptimizeBudget}
-            isBudgetOptimized={isBudgetOptimized}
-            swappedCount={swappedCount}
-          />
+              <button
+                onClick={() => setPlannerMode('meal_planner')}
+                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                  plannerMode === 'meal_planner'
+                    ? 'bg-emerald-600 text-white shadow-md'
+                    : 'text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                <ChefHat className="w-4 h-4" />
+                <span>{lang === 'bn' ? 'AI মিল প্ল্যানার (Section 67)' : 'AI Meal-to-Market'}</span>
+              </button>
+
+              <button
+                onClick={() => setPlannerMode('mess_b2b')}
+                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+                  plannerMode === 'mess_b2b'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                <Building2 className="w-4 h-4" />
+                <span>{lang === 'bn' ? 'মেস ও করপোরেট (B2B)' : 'Mess & B2B Corporate'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Active Mode Component */}
+          {plannerMode === 'household' && (
+            <OnboardingWizard
+              lang={lang}
+              state={onboarding}
+              onChange={(updates) => setOnboarding((prev) => ({ ...prev, ...updates }))}
+              onGenerate={handleGenerateFromOnboarding}
+            />
+          )}
+
+          {plannerMode === 'meal_planner' && (
+            <MealPlanner
+              lang={lang}
+              onGenerateFromMealPlan={handleGenerateFromMealPlan}
+            />
+          )}
+
+          {plannerMode === 'mess_b2b' && (
+            <B2bCorporateMess
+              lang={lang}
+              onApplyMessBasket={handleApplyMessBasket}
+            />
+          )}
+
+          {/* Basket Display with Budget Optimization, Missing Item Alert & Checkout */}
+          <div id="basket-section">
+            <BasketDisplay
+              lang={lang}
+              items={basketItems}
+              budget={onboarding.budget}
+              onUpdateQty={handleUpdateQty}
+              onRemoveItem={handleRemoveItem}
+              onAddItem={handleAddItem}
+              onOptimizeBudget={handleOptimizeBudget}
+              isBudgetOptimized={isBudgetOptimized}
+              swappedCount={swappedCount}
+            />
+          </div>
 
           {/* Lifetime Savings Intelligence & Repeat Market Dashboard */}
           <SavingsDashboard

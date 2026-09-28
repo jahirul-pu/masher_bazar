@@ -81,7 +81,7 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
         </div>
 
         {/* Visual Bar Chart of Monthly History */}
-        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm mb-8">
           <h3 className="text-sm font-bold text-slate-800 mb-6 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-masik-600" />
             <span>{lang === 'bn' ? 'মাসওয়ারী সাশ্রয়ের ইতিহাস' : 'Month-over-Month Verified Savings'}</span>
@@ -110,6 +110,99 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Phase 7: Market Credits Loyalty Wallet & Viral Referral Section (Sections 65 & 66 PRD) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Market Credits Wallet Card (Section 65) */}
+          <div className="lg:col-span-5 bg-gradient-to-br from-amber-500/10 via-orange-50/50 to-amber-100/40 rounded-3xl p-6 sm:p-7 border border-amber-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
+                  {lang === 'bn' ? 'মার্কেট ক্রেডিট ওয়ালেট (Section 65)' : 'Market Credits Wallet'}
+                </span>
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-lg">
+                  ✓ সক্রিয়
+                </span>
+              </div>
+
+              <div className="mb-4">
+                <span className="text-xs text-amber-900 font-semibold block mb-1">
+                  {lang === 'bn' ? 'ব্যবহারযোগ্য কারেন্ট ক্রেডিট ব্যালেন্স' : 'Available Redeemable Balance'}
+                </span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl font-black text-amber-950">৳১৫০</span>
+                  <span className="text-xs text-amber-800 font-bold">(১৫০ ক্রেডিট = ৳১৫০ নগদ মূল্য)</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-amber-900/80 leading-relaxed mb-4">
+                {lang === 'bn'
+                  ? 'প্রতিটি মাসিক বাজারের জন্য ১% ক্যাশব্যাক ক্রেডিট জমা হয়। টানা ৩ মাস বাজার করলে বোনাস ১.৫ গুণ বৃদ্ধি পায়। চেকআউটে সরাসরি নগদ টাকার মতো কাটানো যায়।'
+                  : 'Earn 1% cashback on every cycle. Consecutive on-time subscription orders unlock 1.5x multi-cycle bonus credits.'}
+              </p>
+            </div>
+
+            <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/80 flex items-center justify-between text-xs">
+              <span className="font-semibold text-slate-700">লাইফটাইম অর্জিত ক্রেডিট:</span>
+              <span className="font-extrabold text-amber-900">৳৪৮০</span>
+            </div>
+          </div>
+
+          {/* Viral Referral Program Card (Section 66) */}
+          <div className="lg:col-span-7 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-3xl p-6 sm:p-7 text-white shadow-xl flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-extrabold uppercase tracking-wider bg-white/20 text-emerald-100 px-3 py-1 rounded-full backdrop-blur-sm">
+                  {lang === 'bn' ? 'রেফারাল রিওয়ার্ড প্রোগ্রাম (Section 66)' : 'Viral Neighbor Referral'}
+                </span>
+                <span className="text-xs text-emerald-200">৩ জন সফল রেফার</span>
+              </div>
+
+              <h4 className="text-lg sm:text-xl font-black leading-snug mb-2">
+                {lang === 'bn'
+                  ? 'প্রতিবেশী বা কলিগকে রেফার করলেই উভয়ের জন্য ৳১০০ ডিসকাউন্ট!'
+                  : 'Give ৳100, Get ৳100 for every Dhaka neighbor referred!'}
+              </h4>
+
+              <p className="text-xs text-emerald-100 leading-relaxed mb-6">
+                {lang === 'bn'
+                  ? 'আপনার রেফারেলে বন্ধু প্রথম মাসিক বাজারে পাবেন ৳১০০ ডিসকাউন্ট, আর অর্ডার ডেলিভারি হতেই আপনার অ্যাকাউন্টে জমা হবে ৳১০০ ক্রেডিট।'
+                  : 'Your unique code gives friends ৳100 off their first monthly stock-up, and deposits ৳100 credits directly into your wallet upon delivery.'}
+              </p>
+            </div>
+
+            {/* Code & WhatsApp Share Buttons */}
+            <div className="space-y-3 bg-white/10 p-4 rounded-2xl border border-white/20 backdrop-blur-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-emerald-200 uppercase font-bold block">আপনার রেফারেল কোড</span>
+                  <span className="text-base font-black text-white tracking-widest">MASIK-DHAKA-26</span>
+                </div>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText('https://masikbazar.com/ref/MASIK-DHAKA-26');
+                    alert(lang === 'bn' ? 'রেফারেল লিঙ্ক কপি হয়েছে!' : 'Referral link copied!');
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-white text-emerald-900 font-bold text-xs hover:bg-emerald-50 transition-colors shadow-sm"
+                >
+                  লিঙ্ক কপি করুন
+                </button>
+              </div>
+
+              <button
+                onClick={() => {
+                  const msg = encodeURIComponent(
+                    'মাসিক বাজার থেকে পাইকারি রেটে পুরো মাসের গ্রোসারি কিনুন এবং প্রথম অর্ডারে ৳১০০ ছাড় পান! কোড: MASIK-DHAKA-26 https://masikbazar.com/ref/MASIK-DHAKA-26'
+                  );
+                  window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+                }}
+                className="w-full py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all shadow-md"
+              >
+                <span>💬 হোয়াটসঅ্যাপে শেয়ার করুন</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -32,6 +32,7 @@ interface BasketDisplayProps {
   budget: number;
   onUpdateQty: (variantId: string, delta: number) => void;
   onRemoveItem: (variantId: string) => void;
+  onAddItem?: (item: DisplayBasketItem) => void;
   onOptimizeBudget: () => void;
   isBudgetOptimized: boolean;
   swappedCount: number;
@@ -43,22 +44,36 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
   budget,
   onUpdateQty,
   onRemoveItem,
+  onAddItem,
   onOptimizeBudget,
   isBudgetOptimized,
   swappedCount,
 }) => {
   const [priceLockActive, setPriceLockActive] = useState(false);
+  const [useLoyaltyCredits, setUseLoyaltyCredits] = useState(false);
   const [selectedZone, setSelectedZone] = useState('Gulshan');
   const [selectedSlot, setSelectedSlot] = useState('Morning Slot (9 AM – 12 PM)');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.BKASH);
   const [orderConfirmed, setOrderConfirmed] = useState<string | null>(null);
 
-  // Totals
+  // Totals & Loyalty Credits (Section 65 PRD)
   const totalMasik = items.reduce((acc, i) => acc + i.unitMasikPrice * i.quantity, 0);
   const totalMarket = items.reduce((acc, i) => acc + i.unitMrp * i.quantity, 0);
-  const totalSavings = Math.max(0, totalMarket - totalMasik);
+  const availableCredits = 150;
+  const appliedCredits = useLoyaltyCredits ? Math.min(availableCredits, totalMasik) : 0;
+  const payableMasik = totalMasik - appliedCredits;
+
+  const totalSavings = Math.max(0, totalMarket - payableMasik);
   const savingsPercent = totalMarket > 0 ? Math.round((totalSavings / totalMarket) * 100) : 0;
   const isOverBudget = totalMasik > budget;
+
+  // Missing Item Detection (Section 69 PRD)
+  const hasDetergent = items.some(
+    (i) => i.nameBn.includes('ডিটারজেন্ট') || i.nameEn.toLowerCase().includes('detergent') || i.category.includes('পরিচ্ছন্নতা')
+  );
+  const hasDal = items.some(
+    (i) => i.nameBn.includes('ডাল') || i.nameEn.toLowerCase().includes('dal')
+  );
 
   const handleCheckout = () => {
     const randomOrderNumber = `MB-2026-${Math.floor(10000 + Math.random() * 90000)}`;
@@ -86,6 +101,11 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
           <p className="text-xs font-bold text-amber-900">
             🎉 {lang === 'bn' ? `এই অর্ডারে আপনার সাশ্রয়: ৳${totalSavings.toLocaleString()}` : `Total savings on this order: ৳${totalSavings.toLocaleString()}`}
           </p>
+          {appliedCredits > 0 && (
+            <p className="text-[11px] font-bold text-emerald-800 mt-1">
+              ✓ {lang === 'bn' ? `৳${appliedCredits} মার্কেট ক্রেডিট রিডিম করা হয়েছে` : `৳${appliedCredits} Market Credits successfully redeemed`}
+            </p>
+          )}
         </div>
         <div>
           <button
@@ -144,6 +164,47 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
               </div>
             ) : null}
           </div>
+
+          {/* Missing Staple Alert Banner (Section 69 PRD) */}
+          {!hasDetergent && (
+            <div className="mb-4 bg-amber-50/90 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm animate-pulse-slow">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">🧺</span>
+                <div>
+                  <h5 className="text-xs font-bold text-amber-950">
+                    {lang === 'bn' ? 'স্মার্ট রিমাইন্ডার (Section 69): লন্ড্রি ডিটারজেন্ট যোগ করা হয়নি' : 'Missing Staple Reminder: No Laundry Detergent'}
+                  </h5>
+                  <p className="text-[11px] text-amber-800">
+                    {lang === 'bn'
+                      ? 'সাধারণত প্রতি মাসে আপনার পরিবারে ২ কেজি ডিটারজেন্ট প্রয়োজন হয়।'
+                      : 'Dhaka households typically require 2kg detergent per monthly cycle.'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  if (onAddItem) {
+                    onAddItem({
+                      variantId: 'v-det-wheel-2k',
+                      nameEn: 'Wheel 2in1 Washing Powder',
+                      nameBn: 'হুইল ডিটারজেন্ট পাউডার ২ কেজি',
+                      category: 'পরিচ্ছন্নতা',
+                      unit: 'KG',
+                      unitValue: 2,
+                      quantity: 1,
+                      unitMasikPrice: 330,
+                      unitMrp: 360,
+                      isRecurring: true,
+                    });
+                  }
+                }}
+                className="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-sm shrink-0 transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>{lang === 'bn' ? '+ হুইল ডিটারজেন্ট যোগ করুন (৳৩৩০)' : '+ Add Detergent (৳330)'}</span>
+              </button>
+            </div>
+          )}
 
           {/* Product Items Table / Grid */}
           <div className="divide-y divide-slate-100">
@@ -276,10 +337,24 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
               </span>
             </div>
 
-            <div className="flex items-center justify-between text-base font-bold text-slate-900">
-              <span>{lang === 'bn' ? 'মাসিক বাজার মূল্য:' : 'Masik Bazar Price:'}</span>
-              <span className="text-xl font-black text-masik-700">
+            <div className="flex items-center justify-between text-sm text-slate-700">
+              <span>{lang === 'bn' ? 'মাসিক বাজার মূল মূল্য:' : 'Masik Base Price:'}</span>
+              <span className="font-bold text-slate-800">
                 ৳{totalMasik.toLocaleString()}
+              </span>
+            </div>
+
+            {appliedCredits > 0 && (
+              <div className="flex items-center justify-between text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1.5 rounded-xl border border-amber-200">
+                <span>{lang === 'bn' ? 'মার্কেট ক্রেডিট ডিসকাউন্ট:' : 'Loyalty Credit Applied:'}</span>
+                <span>-৳{appliedCredits}</span>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between text-base font-bold text-slate-900 pt-1">
+              <span>{lang === 'bn' ? 'পরিশোধযোগ্য মূল্য:' : 'Final Payable:'}</span>
+              <span className="text-xl font-black text-masik-700">
+                ৳{payableMasik.toLocaleString()}
               </span>
             </div>
 
@@ -307,6 +382,28 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                 <span className="text-[10px] text-emerald-100 block">{lang === 'bn' ? 'সাশ্রয়' : 'Saved'}</span>
               </div>
             </div>
+          </div>
+
+          {/* Market Credits Loyalty Redemption (Section 65 PRD) */}
+          <div className="mb-5 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3.5">
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={useLoyaltyCredits}
+                onChange={(e) => setUseLoyaltyCredits(e.target.checked)}
+                className="mt-0.5 rounded text-amber-600 focus:ring-amber-500 w-4 h-4 cursor-pointer"
+              />
+              <div>
+                <span className="text-xs font-bold text-amber-950 block">
+                  💰 {lang === 'bn' ? `মার্কেট ক্রেডিট ব্যবহার করুন (ব্যালেন্স: ৳${availableCredits})` : `Redeem Market Credits (Balance: ৳${availableCredits})`}
+                </span>
+                <span className="text-[11px] text-amber-800 block mt-0.5">
+                  {lang === 'bn'
+                    ? 'আপনার অর্জিত লয়ালটি ক্রেডিট সরাসরি এই অর্ডারের বিল থেকে কেটে নিন।'
+                    : 'Apply your accumulated reward credits directly to lower your monthly grocery bill.'}
+                </span>
+              </div>
+            </label>
           </div>
 
           {/* Dhaka Zone Selector */}

@@ -126,12 +126,12 @@ PostgreSQL 16 via Prisma ORM covers all 30+ domain models:
   * Step 6.3: Mobile Basket Customizer with sticky bottom checkout bar. [COMPLETED]
   * Step 6.4: 1-Tap Reorder Banner & 30-Day Price Lock toggle. [COMPLETED]
   * Step 6.5: Savings History & Live Order Tracking tabs. [COMPLETED]
-* [ ] **Phase 7: AI Suite, Loyalty & B2B Expansion**
-  * Step 7.1: Gemini 2.5 Flash Bengali Natural Language Market Builder.
-  * Step 7.2: Meal-to-Market 30-day recipe converter.
-  * Step 7.3: Consumption prediction & automated missing-item detection.
-  * Step 7.4: Market Credits loyalty program & Family referral engine.
-  * Step 7.5: B2B corporate monthly grocery portal & invoicing.
+* [x] **Phase 7: AI Suite, Loyalty & B2B Expansion** [COMPLETED]
+  * Step 7.1: Gemini 2.5 Flash Bengali Natural Language Market Builder & OCR Digitizer. [COMPLETED]
+  * Step 7.2: Meal-to-Market 30-day recipe converter (`MealPlanner.tsx` + Gemini API). [COMPLETED]
+  * Step 7.3: Consumption prediction & automated missing-item detection (`predictDepletionDate` + `detectMissingStaples` + Basket banner). [COMPLETED]
+  * Step 7.4: Market Credits loyalty program & Family referral engine (`LoyaltyService` + Wallet + WhatsApp share + Checkout redemption). [COMPLETED]
+  * Step 7.5: B2B corporate monthly grocery portal & Bachelor Mess split billing (`B2bCorporateMess.tsx` + `B2bService` Net-30 credit limit + 5% VAT invoices). [COMPLETED]
 * [ ] **Phase 8: End-to-End Validation, Security Hardening & Launch Readiness**
   * Step 8.1: Unit & integration test coverage.
   * Step 8.2: Concurrency & double-booking stress tests (k6).
