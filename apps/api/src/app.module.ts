@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
@@ -13,6 +13,8 @@ import { ConsumptionModule } from './consumption/consumption.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { B2BModule } from './b2b/b2b.module';
 import { ProcurementModule } from './procurement/procurement.module';
+import { SecurityHeadersMiddleware } from './common/security.middleware';
+import { RateLimiterMiddleware } from './common/rate-limiter.middleware';
 
 @Module({
   imports: [
@@ -32,4 +34,10 @@ import { ProcurementModule } from './procurement/procurement.module';
     ProcurementModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(SecurityHeadersMiddleware, RateLimiterMiddleware)
+      .forRoutes('*');
+  }
+}

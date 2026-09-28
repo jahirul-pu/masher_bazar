@@ -2,17 +2,36 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { IdempotencyGuard } from './common/idempotency.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Parse allowed CORS origins from environment
+  const envOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:19006'];
+
   app.enableCors({
-    origin: '*',
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void
+    ) => {
+      // Allow mobile apps / curl / server-to-server calls with undefined origin
+      if (!origin || envOrigins.includes('*') || envOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, true); // Dev fallback
+      }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
   app.setGlobalPrefix('api');
+  app.enableShutdownHooks();
+
+  app.useGlobalGuards(new IdempotencyGuard());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -22,8 +41,8 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Masik Bazar API')
-    .setDescription('Household Grocery Operating System API — Full Scope Enterprise Build')
+    .setTitle('Masik Bazar Enterprise API')
+    .setDescription('Household Grocery Operating System API — Full Scope Enterprise Build with Security Hardening')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

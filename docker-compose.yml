@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+  # -------------------------------------------------------------
+  # PostgreSQL 16 Enterprise Database
+  # -------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: masik-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-masik_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-masik_secure_pass_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-masik_bazar}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-masik_user} -d ${POSTGRES_DB:-masik_bazar}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - masik-network
+
+  # -------------------------------------------------------------
+  # Redis 7 In-Memory Cache, Rate Limiting & Queue Broker
+  # -------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: masik-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-masik_redis_pass_2026}"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-masik_redis_pass_2026}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - masik-network
+
+  # -------------------------------------------------------------
+  # Masik Bazar Core API (NestJS Enterprise Backend)
+  # -------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    container_name: masik-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-masik_user}:${POSTGRES_PASSWORD:-masik_secure_pass_2026}@postgres:5432/${POSTGRES_DB:-masik_bazar}?schema=public
+      REDIS_URL: redis://:${REDIS_PASSWORD:-masik_redis_pass_2026}@redis:6379
+      JWT_SECRET: ${JWT_SECRET:-masik_dhaka_jwt_super_secret_key_2026}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000,http://localhost:3001}
+      BKASH_APP_KEY: ${BKASH_APP_KEY:-mock_bkash_key}
+      BKASH_APP_SECRET: ${BKASH_APP_SECRET:-mock_bkash_secret}
+      NAGAD_MERCHANT_ID: ${NAGAD_MERCHANT_ID:-mock_nagad_merchant}
+      SSLCOMMERZ_STORE_ID: ${SSLCOMMERZ_STORE_ID:-mock_ssl_store}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-mock_gemini_key}
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - masik-network
+
+  # -------------------------------------------------------------
+  # Masik Bazar Web Application (Customer Portal - Next.js 15)
+  # -------------------------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    container_name: masik-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - masik-network
+
+  # -------------------------------------------------------------
+  # Masik Bazar Admin & WMS Console (Next.js 15)
+  # -------------------------------------------------------------
+  admin:
+    build:
+      context: .
+      dockerfile: ./apps/admin/Dockerfile
+    container_name: masik-admin
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    ports:
+      - "3001:3001"
+    depends_on:
+      - api
+    networks:
+      - masik-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  masik-network:
+    driver: bridge
