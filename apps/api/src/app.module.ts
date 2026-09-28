@@ -12,6 +12,7 @@ import { AiModule } from './ai/ai.module';
 import { ConsumptionModule } from './consumption/consumption.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { B2BModule } from './b2b/b2b.module';
+import { ProcurementModule } from './procurement/procurement.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { B2BModule } from './b2b/b2b.module';
     ConsumptionModule,
     LoyaltyModule,
     B2BModule,
+    ProcurementModule,
   ],
 })
 export class AppModule {}
