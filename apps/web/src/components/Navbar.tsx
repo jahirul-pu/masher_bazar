@@ -54,10 +54,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
               <div>
                 <span className="text-xl sm:text-2xl font-black tracking-tight text-masik-900 block leading-tight">
-                  {lang === 'bn' ? 'মাসিক বাজার' : 'Masik Bazar'}
+                  {lang === 'bn' ? 'মাসের বাজার' : 'Masher Bazar'}
                 </span>
                 <span className="text-[10px] sm:text-xs font-semibold text-masik-600 tracking-wider uppercase block">
-                  {lang === 'bn' ? 'আপনার মাসিক বাজারের নির্ভরযোগ্য মাধ্যম' : 'Your Monthly Grocery OS'}
+                  {lang === 'bn' ? 'আপনার মাসের বাজারের নির্ভরযোগ্য মাধ্যম' : 'Your Monthly Grocery OS'}
                 </span>
               </div>
             </div>
@@ -149,7 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-black text-slate-900">
-                {lang === 'bn' ? 'মাসিক বাজারে স্বাগতম' : 'Welcome to Masik Bazar'}
+                {lang === 'bn' ? 'মাসের বাজারে স্বাগতম' : 'Welcome to Masher Bazar'}
               </h3>
               <p className="text-xs text-slate-500 mt-1">
                 {lang === 'bn'

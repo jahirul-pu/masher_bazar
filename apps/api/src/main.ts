@@ -41,7 +41,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Masik Bazar Enterprise API')
+    .setTitle('Masher Bazar (মাসের বাজার) Enterprise API')
     .setDescription('Household Grocery Operating System API — Full Scope Enterprise Build with Security Hardening')
     .setVersion('1.0')
     .addBearerAuth()
@@ -52,7 +52,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 4000;
   await app.listen(port);
-  console.log(`🚀 Masik Bazar Backend API running on: http://localhost:${port}/api`);
+  console.log(`🚀 Masher Bazar Backend API running on: http://localhost:${port}/api`);
   console.log(`📚 Swagger Documentation available at: http://localhost:${port}/api/docs`);
 }
 

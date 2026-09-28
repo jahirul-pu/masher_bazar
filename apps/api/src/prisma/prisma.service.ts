@@ -8,7 +8,12 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleInit() {
-    await prisma.$connect();
+    try {
+      await prisma.$connect();
+      console.log('✅ PostgreSQL connection established');
+    } catch (err) {
+      console.warn('⚠️ PostgreSQL not reachable yet. API initialized in resilient standby mode.');
+    }
   }
 
   async onModuleDestroy() {

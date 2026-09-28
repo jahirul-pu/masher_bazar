@@ -1,6 +1,6 @@
-# 🚀 Masik Bazar — Enterprise Production Launch & Operations Runbook
+# 🚀 Masher Bazar — Enterprise Production Launch & Operations Runbook
 
-**System**: Masik Bazar (মাসিক বাজার) — Dhaka Household Grocery Operating System  
+**System**: Masher Bazar (মাসের বাজার) — Dhaka Household Grocery Operating System  
 **Version**: 1.0.0 (Enterprise Full Scope Build)  
 **Date**: September 2026  
 **Target Region**: Dhaka Metropolitan Area (Gulshan, Banani, Uttara, Dhanmondi, Mirpur, Savar)
@@ -9,7 +9,7 @@
 
 ## 1. Architecture Overview
 
-Masik Bazar is architected as a high-performance monorepo powered by **Turborepo** and **pnpm workspaces**:
+Masher Bazar is architected as a high-performance monorepo powered by **Turborepo** and **pnpm workspaces**:
 
 ```
 masher-bazar/
@@ -231,4 +231,4 @@ docker exec -it masik-redis redis-cli -a masik_redis_pass_2026 FLUSHDB
 
 ---
 
-**Masik Bazar (মাসিক বাজার)** is verified, hardened, and ready for commercial rollout across Dhaka.
+**Masher Bazar (মাসের বাজার)** is verified, hardened, and ready for commercial rollout across Dhaka.

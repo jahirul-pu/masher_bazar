@@ -2,14 +2,14 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Masik Bazar (মাসিক বাজার) — Your Whole Month’s Market. In One Order.',
+  title: 'Masher Bazar (মাসের বাজার) — Your Whole Month’s Market. In One Order.',
   description:
     'The household grocery operating system for Bangladesh. Generate personalized monthly baskets, optimize your household budget, lock commodity prices, and save up to 15% on bulk procurement.',
   keywords: [
-    'Masik Bazar',
+    'Masher Bazar',
     'Monthly grocery Bangladesh',
     'Dhaka grocery subscription',
-    'মাসিক বাজার',
+    'মাসের বাজার',
     'Bulk rice dal oil Dhaka',
   ],
 };

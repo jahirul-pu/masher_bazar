@@ -187,7 +187,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-masik-700 to-masik-600 hover:from-masik-800 hover:to-masik-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-lg shadow-masik-700/25"
         >
           <Sparkles className="w-4 h-4" />
-          <span>{lang === 'bn' ? 'আমার মাসিক বাজার তৈরি করুন' : 'Generate My Month’s Market'}</span>
+          <span>{lang === 'bn' ? 'আমার মাসের বাজার তৈরি করুন' : 'Generate My Month’s Market'}</span>
         </button>
       </div>
     </div>

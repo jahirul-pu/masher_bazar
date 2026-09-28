@@ -144,7 +144,7 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
   };
 
   const handleCopyMessWhatsapp = () => {
-    const text = `📢 মাসিক বাজার মেস হিসাব (মেম্বার: ${messMembers} জন)\nমোট বাজার: ৳${totalMessCost.toLocaleString()}\nজনপ্রতি খরচ: ৳${perMemberCost.toLocaleString()}\nচাল: ${messRiceKg}kg, তেল: ${messOilLiters}L, ডাল: ${messDalKg}kg, আলু: ${messPotatoKg}kg\nঅর্ডার করতে ভিজিট করুন: https://masikbazar.com`;
+    const text = `📢 মাসের বাজার মেস হিসাব (মেম্বার: ${messMembers} জন)\nমোট বাজার: ৳${totalMessCost.toLocaleString()}\nজনপ্রতি খরচ: ৳${perMemberCost.toLocaleString()}\nচাল: ${messRiceKg}kg, তেল: ${messOilLiters}L, ডাল: ${messDalKg}kg, আলু: ${messPotatoKg}kg\nঅর্ডার করতে ভিজিট করুন: https://masherbazar.com`;
     navigator.clipboard.writeText(text);
     setMessCopied(true);
     setTimeout(() => setMessCopied(false), 3000);
@@ -264,7 +264,7 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
               </span>
               <div className="flex items-baseline gap-3">
                 <span className="text-3xl font-black">৳{totalMessCost.toLocaleString()}</span>
-                <span className="text-xs text-indigo-200">মোট মাসিক বাজার</span>
+                <span className="text-xs text-indigo-200">মোট মাসের বাজার</span>
               </div>
               <div className="mt-2 inline-flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl backdrop-blur-sm">
                 <span className="text-xs text-indigo-100">জনপ্রতি খরচ:</span>

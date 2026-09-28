@@ -42,7 +42,7 @@ export class AiService {
       try {
         const response = await this.aiClient.models.generateContent({
           model: 'gemini-2.5-flash',
-          contents: `You are an AI assistant for Masik Bazar (মাসিক বাজার), a monthly grocery OS in Bangladesh.
+          contents: `You are an AI assistant for Masher Bazar (মাসের বাজার), a monthly grocery OS in Bangladesh.
 Analyze the user's natural language input: "${prompt}"
 Return ONLY valid JSON with keys:
 - "householdSize": number (default 4)
@@ -99,7 +99,7 @@ Return ONLY valid JSON with keys:
         tier = MarketTier.PREMIUM;
       }
 
-      explanationBn = `আপনার ${size} জনের পরিবারের জন্য ৳${budget.toLocaleString()} বাজেটে একটি আদর্শ মাসিক বাজার প্রস্তাব করা হলো।`;
+      explanationBn = `আপনার ${size} জনের পরিবারের জন্য ৳${budget.toLocaleString()} বাজেটে একটি আদর্শ মাসের বাজার প্রস্তাব করা হলো।`;
     }
 
     // Generate basket using the deterministic engine

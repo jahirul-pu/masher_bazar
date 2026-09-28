@@ -32,7 +32,7 @@ export default function AdminDashboardPage() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-black text-lg text-white tracking-tight">Masik Bazar</span>
+              <span className="font-black text-lg text-white tracking-tight">Masher Bazar</span>
               <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 Ops & WMS Center
               </span>

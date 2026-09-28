@@ -141,7 +141,7 @@ export interface ISmsGatewayAdapter {
 
 export class MockSmsGatewayAdapter implements ISmsGatewayAdapter {
   async sendOtp(phone: string, otp: string): Promise<{ success: boolean; messageId: string }> {
-    console.log(`[SANDBOX SMS] To: ${phone} | Text: "Your Masik Bazar verification code is ${otp}. Valid for 5 minutes."`);
+    console.log(`[SANDBOX SMS] To: ${phone} | Text: "Your Masher Bazar (মাসের বাজার) verification code is ${otp}. Valid for 5 minutes."`);
     return { success: true, messageId: `SMS-${Date.now()}` };
   }
 
@@ -151,7 +151,7 @@ export class MockSmsGatewayAdapter implements ISmsGatewayAdapter {
   }
 
   async sendDeliveryUpdate(phone: string, orderNumber: string, statusText: string): Promise<{ success: boolean }> {
-    console.log(`[SANDBOX SMS] To: ${phone} | Text: "Masik Bazar Order ${orderNumber} update: ${statusText}"`);
+    console.log(`[SANDBOX SMS] To: ${phone} | Text: "Masher Bazar Order ${orderNumber} update: ${statusText}"`);
     return { success: true };
   }
 }

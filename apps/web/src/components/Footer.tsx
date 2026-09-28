@@ -19,7 +19,7 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
                 <ShoppingBag className="w-5 h-5" />
               </div>
               <span className="text-xl font-black text-white">
-                {lang === 'bn' ? 'মাসিক বাজার' : 'Masik Bazar'}
+                {lang === 'bn' ? 'মাসের বাজার' : 'Masher Bazar'}
               </span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed mb-4">
@@ -68,10 +68,10 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
               {lang === 'bn' ? 'মডিউল ও সেবা' : 'Platform Modules'}
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
-              <li>{lang === 'bn' ? 'মাসিক বাজার ক্যালকুলেটর' : 'Monthly Market Generator'}</li>
+              <li>{lang === 'bn' ? 'মাসের বাজার ক্যালকুলেটর' : 'Monthly Market Generator'}</li>
               <li>{lang === 'bn' ? 'স্মার্ট বাজেট অপটিমাইজার' : 'Smart Budget Optimizer'}</li>
               <li>{lang === 'bn' ? '৩০ দিনের প্রাইস লক গ্যারান্টি' : '30-Day Price Lock Guarantee'}</li>
-              <li>{lang === 'bn' ? 'মাসিক বাজার এসেনশিয়ালস (প্রাইভেট লেবেল)' : 'Masik Essentials (Private Label)'}</li>
+              <li>{lang === 'bn' ? 'মাসের বাজার এসেনশিয়ালস (প্রাইভেট লেবেল)' : 'Masher Essentials (Private Label)'}</li>
               <li>{lang === 'bn' ? 'মেস, হোস্টেল ও অফিস বিটুবি সার্ভিস' : 'B2B Mess & Office Supply'}</li>
             </ul>
           </div>
@@ -88,7 +88,7 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-emerald-400" />
-                <span>support@masikbazar.com</span>
+                <span>support@masherbazar.com</span>
               </p>
             </div>
             <div className="text-[11px] text-slate-500">
@@ -104,7 +104,7 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
         </div>
 
         <div className="border-t border-slate-800 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} Masik Bazar Bangladesh. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Masher Bazar Bangladesh. All rights reserved.</p>
           <p>
             {lang === 'bn'
               ? 'বাজার করতে হবে না। বাজার হয়ে যাবে।'

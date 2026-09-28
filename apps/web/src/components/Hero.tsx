@@ -150,7 +150,7 @@ export const Hero: React.FC<HeroProps> = ({
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 {lang === 'bn'
-                  ? 'বাজারের জিনিসপত্রের দাম বাড়লেও আপনার নিশ্চিত করা মাসিক বাজারের মূল্য ৩০ দিন অপরিবর্তিত থাকে।'
+                  ? 'বাজারের জিনিসপত্রের দাম বাড়লেও আপনার নিশ্চিত করা মাসের বাজারের মূল্য ৩০ দিন অপরিবর্তিত থাকে।'
                   : 'Shield your family budget against wholesale commodity spikes with guaranteed price locks.'}
               </p>
             </div>

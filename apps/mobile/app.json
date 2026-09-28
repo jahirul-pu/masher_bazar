@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Masik Bazar (মাসিক বাজার)",
-    "slug": "masik-bazar",
+    "name": "Masher Bazar (মাসের বাজার)",
+    "slug": "masher-bazar",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,14 +14,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.masikbazar.app"
+      "bundleIdentifier": "com.masherbazar.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#064e3b"
       },
-      "package": "com.masikbazar.app"
+      "package": "com.masherbazar.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

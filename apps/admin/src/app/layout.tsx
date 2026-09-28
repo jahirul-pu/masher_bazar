@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Masik Bazar — Operations, WMS & Procurement Control Center',
-  description: 'Enterprise operations back-office for Masik Bazar Bangladesh.',
+  title: 'Masher Bazar (মাসের বাজার) — Operations, WMS & Procurement Control Center',
+  description: 'Enterprise operations back-office for Masher Bazar Bangladesh.',
 };
 
 export default function RootLayout({

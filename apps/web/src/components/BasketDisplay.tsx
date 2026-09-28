@@ -129,7 +129,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5 text-masik-600" />
                 <h3 className="text-xl font-bold text-slate-900">
-                  {lang === 'bn' ? 'আপনার মাসিক বাজারের তালিকা' : 'Your Monthly Grocery Basket'}
+                  {lang === 'bn' ? 'আপনার মাসের বাজারের তালিকা' : 'Your Monthly Grocery Basket'}
                 </h3>
               </div>
               <p className="text-xs text-slate-500 mt-1">
@@ -338,7 +338,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
             </div>
 
             <div className="flex items-center justify-between text-sm text-slate-700">
-              <span>{lang === 'bn' ? 'মাসিক বাজার মূল মূল্য:' : 'Masik Base Price:'}</span>
+              <span>{lang === 'bn' ? 'মাসের বাজার মূল মূল্য:' : 'Masher Base Price:'}</span>
               <span className="font-bold text-slate-800">
                 ৳{totalMasik.toLocaleString()}
               </span>

@@ -45,7 +45,7 @@ services:
       - masik-network
 
   # -------------------------------------------------------------
-  # Masik Bazar Core API (NestJS Enterprise Backend)
+  # Masher Bazar Core API (NestJS Enterprise Backend)
   # -------------------------------------------------------------
   api:
     build:
@@ -76,7 +76,7 @@ services:
       - masik-network
 
   # -------------------------------------------------------------
-  # Masik Bazar Web Application (Customer Portal - Next.js 15)
+  # Masher Bazar Web Application (Customer Portal - Next.js 15)
   # -------------------------------------------------------------
   web:
     build:
@@ -96,7 +96,7 @@ services:
       - masik-network
 
   # -------------------------------------------------------------
-  # Masik Bazar Admin & WMS Console (Next.js 15)
+  # Masher Bazar Admin & WMS Console (Next.js 15)
   # -------------------------------------------------------------
   admin:
     build:

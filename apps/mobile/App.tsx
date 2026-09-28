@@ -46,8 +46,8 @@ export default function App() {
 
   const handleCheckout = () => {
     Alert.alert(
-      'মাসিক বাজার নিশ্চিতকরণ',
-      `আপনার ৳${totalMasik.toLocaleString()} টাকার মাসিক বাজার সফলভাবে গ্রহণ করা হয়েছে!\nসাশ্রয়: ৳${totalSavings.toLocaleString()}\nডেলিভারি এরিয়া: ঢাকা`,
+      'মাসের বাজার নিশ্চিতকরণ',
+      `আপনার ৳${totalMasik.toLocaleString()} টাকার মাসের বাজার সফলভাবে গ্রহণ করা হয়েছে!\nসাশ্রয়: ৳${totalSavings.toLocaleString()}\nডেলিভারি এরিয়া: ঢাকা`,
       [{ text: 'ঠিক আছে' }]
     );
   };
@@ -59,7 +59,7 @@ export default function App() {
       {/* Mobile Top Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>মাসিক বাজার</Text>
+          <Text style={styles.headerTitle}>মাসের বাজার</Text>
           <Text style={styles.headerSubtitle}>এক মাসের বাজার। এক অর্ডারে।</Text>
         </View>
         <View style={styles.savingsPill}>
@@ -74,7 +74,7 @@ export default function App() {
           onPress={() => setActiveTab('market')}
         >
           <Text style={[styles.tabText, activeTab === 'market' && styles.tabTextActive]}>
-            মাসিক বাজার
+            মাসের বাজার
           </Text>
         </TouchableOpacity>
         <TouchableOpacity

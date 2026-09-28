@@ -31,7 +31,7 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
               <span>{lang === 'bn' ? 'ব্যক্তিগত সেভিংস পোর্টাল' : 'Household Savings Intelligence'}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-              {lang === 'bn' ? 'আমার মাসিক বাজার সেভিংস ড্যাশবোর্ড' : 'My Lifetime Savings Dashboard'}
+              {lang === 'bn' ? 'আমার মাসের বাজার সেভিংস ড্যাশবোর্ড' : 'My Lifetime Savings Dashboard'}
             </h2>
           </div>
 
@@ -139,7 +139,7 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
 
               <p className="text-xs text-amber-900/80 leading-relaxed mb-4">
                 {lang === 'bn'
-                  ? 'প্রতিটি মাসিক বাজারের জন্য ১% ক্যাশব্যাক ক্রেডিট জমা হয়। টানা ৩ মাস বাজার করলে বোনাস ১.৫ গুণ বৃদ্ধি পায়। চেকআউটে সরাসরি নগদ টাকার মতো কাটানো যায়।'
+                  ? 'প্রতিটি মাসের বাজারের জন্য ১% ক্যাশব্যাক ক্রেডিট জমা হয়। টানা ৩ মাস বাজার করলে বোনাস ১.৫ গুণ বৃদ্ধি পায়। চেকআউটে সরাসরি নগদ টাকার মতো কাটানো যায়।'
                   : 'Earn 1% cashback on every cycle. Consecutive on-time subscription orders unlock 1.5x multi-cycle bonus credits.'}
               </p>
             </div>
@@ -168,7 +168,7 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
 
               <p className="text-xs text-emerald-100 leading-relaxed mb-6">
                 {lang === 'bn'
-                  ? 'আপনার রেফারেলে বন্ধু প্রথম মাসিক বাজারে পাবেন ৳১০০ ডিসকাউন্ট, আর অর্ডার ডেলিভারি হতেই আপনার অ্যাকাউন্টে জমা হবে ৳১০০ ক্রেডিট।'
+                  ? 'আপনার রেফারেলে বন্ধু প্রথম মাসের বাজারে পাবেন ৳১০০ ডিসকাউন্ট, আর অর্ডার ডেলিভারি হতেই আপনার অ্যাকাউন্টে জমা হবে ৳১০০ ক্রেডিট।'
                   : 'Your unique code gives friends ৳100 off their first monthly stock-up, and deposits ৳100 credits directly into your wallet upon delivery.'}
               </p>
             </div>
@@ -178,11 +178,11 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[10px] text-emerald-200 uppercase font-bold block">আপনার রেফারেল কোড</span>
-                  <span className="text-base font-black text-white tracking-widest">MASIK-DHAKA-26</span>
+                  <span className="text-base font-black text-white tracking-widest">MASHER-DHAKA-26</span>
                 </div>
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText('https://masikbazar.com/ref/MASIK-DHAKA-26');
+                    navigator.clipboard.writeText('https://masherbazar.com/ref/MASHER-DHAKA-26');
                     alert(lang === 'bn' ? 'রেফারেল লিঙ্ক কপি হয়েছে!' : 'Referral link copied!');
                   }}
                   className="px-3 py-1.5 rounded-xl bg-white text-emerald-900 font-bold text-xs hover:bg-emerald-50 transition-colors shadow-sm"
@@ -194,7 +194,7 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
               <button
                 onClick={() => {
                   const msg = encodeURIComponent(
-                    'মাসিক বাজার থেকে পাইকারি রেটে পুরো মাসের গ্রোসারি কিনুন এবং প্রথম অর্ডারে ৳১০০ ছাড় পান! কোড: MASIK-DHAKA-26 https://masikbazar.com/ref/MASIK-DHAKA-26'
+                    'মাসের বাজার থেকে পাইকারি রেটে পুরো মাসের গ্রোসারি কিনুন এবং প্রথম অর্ডারে ৳১০০ ছাড় পান! কোড: MASHER-DHAKA-26 https://masherbazar.com/ref/MASHER-DHAKA-26'
                   );
                   window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
                 }}

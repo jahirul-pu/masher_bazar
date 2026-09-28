@@ -202,14 +202,14 @@ export default function HomePage() {
 
   // Budget Optimization Solver (Section 11, 12 & 13 of PRD)
   const handleOptimizeBudget = () => {
-    // Swaps branded products to Masik Essentials high-quality equivalents
+    // Swaps branded products to Masher Essentials high-quality equivalents
     const optimized = basketItems.map((item) => {
       if (item.variantId === 'v-oil-rup-5l') {
         return {
           ...item,
           variantId: 'v-oil-mb-5l',
-          nameEn: 'Masik Essentials Fortified Soybean Oil',
-          nameBn: 'মাসিক বাজার এসেনশিয়ালস সয়াবিন তেল ৫লি',
+          nameEn: 'Masher Essentials Fortified Soybean Oil',
+          nameBn: 'মাসের বাজার এসেনশিয়ালস সয়াবিন তেল ৫লি',
           unitMasikPrice: 775, // saves ৳40
         };
       }
@@ -217,8 +217,8 @@ export default function HomePage() {
         return {
           ...item,
           variantId: 'v-rice-mb-25k',
-          nameEn: 'Masik Essentials Miniket Rice 25kg',
-          nameBn: 'মাসিক এসেনশিয়ালস মিনিকেট চাল ২৫ কেজি',
+          nameEn: 'Masher Essentials Miniket Rice 25kg',
+          nameBn: 'মাসের বাজার এসেনশিয়ালস মিনিকেট চাল ২৫ কেজি',
           unitMasikPrice: 1890, // saves ৳90
         };
       }
@@ -226,8 +226,8 @@ export default function HomePage() {
         return {
           ...item,
           variantId: 'v-dal-mb-2k',
-          nameEn: 'Masik Essentials Desi Masoor Dal 2kg',
-          nameBn: 'মাসিক এসেনশিয়ালস দেশি মসুর ডাল ২ কেজি',
+          nameEn: 'Masher Essentials Desi Masoor Dal 2kg',
+          nameBn: 'মাসের বাজার এসেনশিয়ালস দেশি মসুর ডাল ২ কেজি',
           unitMasikPrice: 290, // saves ৳20 x 2 = ৳40
         };
       }

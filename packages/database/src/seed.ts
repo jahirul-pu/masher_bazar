@@ -3,7 +3,7 @@ import { PrismaClient, UserRole, MarketTier, ProductUnit, SubstitutionType } fro
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting Masik Bazar Enterprise Database Seed...');
+  console.log('🌱 Starting Masher Bazar Enterprise Database Seed...');
 
   // 1. Delivery Zones & Slots for Dhaka Metropolitan
   console.log('📍 Seeding Dhaka Delivery Zones & Slots...');
@@ -63,7 +63,7 @@ async function main() {
   // 3. Brands
   console.log('🏷️ Seeding Brands...');
   const brandsData = [
-    { name: 'Masik Bazar Essentials', isPrivate: true },
+    { name: 'Masher Bazar Essentials', isPrivate: true },
     { name: 'Teer', isPrivate: false },
     { name: 'Rupchanda', isPrivate: false },
     { name: 'Chashi', isPrivate: false },
@@ -149,12 +149,12 @@ async function main() {
     },
     {
       slug: 'masik-everyday-miniket',
-      nameEn: 'Masik Essentials Everyday Miniket Rice',
-      nameBn: 'মাসিক বাজার এসেনশিয়ালস মিনিকেট চাল',
+      nameEn: 'Masher Essentials Everyday Miniket Rice',
+      nameBn: 'মাসের বাজার এসেনশিয়ালস মিনিকেট চাল',
       categorySlug: 'staples_rice',
-      brandName: 'Masik Bazar Essentials',
+      brandName: 'Masher Bazar Essentials',
       variants: [
-        { sku: 'RICE-MINI-MB-25K', nameEn: 'Masik Essentials Miniket Rice 25kg', nameBn: 'মাসিক এসেনশিয়ালস মিনিকেট চাল ২৫ কেজি', unit: ProductUnit.KG, unitVal: 25, mrp: 2100, masikPrice: 1890, purchaseCost: 1720, isPrivate: true },
+        { sku: 'RICE-MINI-MB-25K', nameEn: 'Masher Essentials Miniket Rice 25kg', nameBn: 'মাসের বাজার এসেনশিয়ালস মিনিকেট চাল ২৫ কেজি', unit: ProductUnit.KG, unitVal: 25, mrp: 2100, masikPrice: 1890, purchaseCost: 1720, isPrivate: true },
       ],
     },
     {
@@ -192,12 +192,12 @@ async function main() {
     },
     {
       slug: 'masik-pure-soybean-oil',
-      nameEn: 'Masik Essentials Fortified Soybean Oil',
-      nameBn: 'মাসিক বাজার এসেনশিয়ালস সয়াবিন তেল',
+      nameEn: 'Masher Essentials Fortified Soybean Oil',
+      nameBn: 'মাসের বাজার এসেনশিয়ালস সয়াবিন তেল',
       categorySlug: 'cooking_oil',
-      brandName: 'Masik Bazar Essentials',
+      brandName: 'Masher Bazar Essentials',
       variants: [
-        { sku: 'OIL-SOYA-MB-5L', nameEn: 'Masik Essentials Soybean Oil 5 Liter', nameBn: 'মাসিক এসেনশিয়ালস সয়াবিন তেল ৫ লিটার', unit: ProductUnit.LITER, unitVal: 5, mrp: 850, masikPrice: 775, purchaseCost: 715, isPrivate: true },
+        { sku: 'OIL-SOYA-MB-5L', nameEn: 'Masher Essentials Soybean Oil 5 Liter', nameBn: 'মাসের বাজার এসেনশিয়ালস সয়াবিন তেল ৫ লিটার', unit: ProductUnit.LITER, unitVal: 5, mrp: 850, masikPrice: 775, purchaseCost: 715, isPrivate: true },
       ],
     },
 
@@ -214,12 +214,12 @@ async function main() {
     },
     {
       slug: 'masik-desi-masoor-dal',
-      nameEn: 'Masik Essentials Red Lentils',
-      nameBn: 'মাসিক এসেনশিয়ালস দেশি মসুর ডাল',
+      nameEn: 'Masher Essentials Red Lentils',
+      nameBn: 'মাসের বাজার এসেনশিয়ালস দেশি মসুর ডাল',
       categorySlug: 'staples_lentils',
-      brandName: 'Masik Bazar Essentials',
+      brandName: 'Masher Bazar Essentials',
       variants: [
-        { sku: 'DAL-MASOOR-MB-2K', nameEn: 'Masik Essentials Desi Masoor Dal 2kg', nameBn: 'মাসিক এসেনশিয়ালস দেশি মসুর ডাল ২ কেজি', unit: ProductUnit.KG, unitVal: 2, mrp: 330, masikPrice: 290, purchaseCost: 260, isPrivate: true },
+        { sku: 'DAL-MASOOR-MB-2K', nameEn: 'Masher Essentials Desi Masoor Dal 2kg', nameBn: 'মাসের বাজার এসেনশিয়ালস দেশি মসুর ডাল ২ কেজি', unit: ProductUnit.KG, unitVal: 2, mrp: 330, masikPrice: 290, purchaseCost: 260, isPrivate: true },
       ],
     },
 
@@ -236,12 +236,12 @@ async function main() {
     },
     {
       slug: 'masik-flour-atta',
-      nameEn: 'Masik Essentials Premium Atta',
-      nameBn: 'মাসিক এসেনশিয়ালস প্রিমিয়াম আটা',
+      nameEn: 'Masher Essentials Premium Atta',
+      nameBn: 'মাসের বাজার এসেনশিয়ালস প্রিমিয়াম আটা',
       categorySlug: 'staples_flour',
-      brandName: 'Masik Bazar Essentials',
+      brandName: 'Masher Bazar Essentials',
       variants: [
-        { sku: 'FLOUR-ATTA-MB-5K', nameEn: 'Masik Essentials Premium Atta 5kg', nameBn: 'মাসিক এসেনশিয়ালস আটা ৫ কেজি', unit: ProductUnit.KG, unitVal: 5, mrp: 320, masikPrice: 280, purchaseCost: 250, isPrivate: true },
+        { sku: 'FLOUR-ATTA-MB-5K', nameEn: 'Masher Essentials Premium Atta 5kg', nameBn: 'মাসের বাজার এসেনশিয়ালস আটা ৫ কেজি', unit: ProductUnit.KG, unitVal: 5, mrp: 320, masikPrice: 280, purchaseCost: 250, isPrivate: true },
       ],
     },
 
@@ -293,7 +293,7 @@ async function main() {
       nameEn: 'Munshiganj Diamond Potato',
       nameBn: 'মুন্সীগঞ্জ ডায়মন্ড আলু',
       categorySlug: 'produce_potato',
-      brandName: 'Masik Bazar Essentials',
+      brandName: 'Masher Bazar Essentials',
       variants: [
         { sku: 'PROD-POTATO-5K', nameEn: 'Fresh Potato 5kg Bag', nameBn: 'তাজা আলু ৫ কেজি ব্যাগ', unit: ProductUnit.KG, unitVal: 5, mrp: 260, masikPrice: 230, purchaseCost: 200, isPrivate: true },
       ],
@@ -303,7 +303,7 @@ async function main() {
       nameEn: 'Pabna Desi Onion',
       nameBn: 'পাবনার দেশি পেঁয়াজ',
       categorySlug: 'produce_onion',
-      brandName: 'Masik Bazar Essentials',
+      brandName: 'Masher Bazar Essentials',
       variants: [
         { sku: 'PROD-ONION-5K', nameEn: 'Pabna Desi Onion 5kg Bag', nameBn: 'পাবনা দেশি পেঁয়াজ ৫ কেজি ব্যাগ', unit: ProductUnit.KG, unitVal: 5, mrp: 450, masikPrice: 395, purchaseCost: 350, isPrivate: true },
       ],
@@ -472,7 +472,7 @@ async function main() {
     create: {
       phone: '+8801700000000',
       email: 'admin@masikbazar.com',
-      fullName: 'Masik Bazar Admin',
+      fullName: 'Masher Bazar Admin',
       role: UserRole.SUPER_ADMIN,
     },
   });
@@ -530,7 +530,7 @@ async function main() {
     });
   }
 
-  console.log('✅ Masik Bazar Database Seed Completed Successfully!');
+  console.log('✅ Masher Bazar Database Seed Completed Successfully!');
 }
 
 main()

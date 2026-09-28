@@ -128,11 +128,11 @@ export class LoyaltyService {
 
     return {
       referralCode: profile.referralCode,
-      referralLink: `https://masikbazar.com/join?ref=${profile.referralCode}`,
+      referralLink: `https://masherbazar.com/join?ref=${profile.referralCode}`,
       friendsReferred: totalReferred,
       successfulOrders: totalReferred,
       creditsEarned: referralCredits._sum.amount || (totalReferred * 200),
-      sharePromptBn: `মাসিক বাজার-এ যোগ দিয়ে আমার রেফারাল কোড ${profile.referralCode} ব্যবহার করুন এবং আপনার প্রথম মাসিক বাজারে পাবেন ৳১০০ ডিসকাউন্ট!`,
+      sharePromptBn: `মাসের বাজার-এ যোগ দিয়ে আমার রেফারাল কোড ${profile.referralCode} ব্যবহার করুন এবং আপনার প্রথম মাসের বাজারে পাবেন ৳১০০ ডিসকাউন্ট!`,
     };
   }
 }
