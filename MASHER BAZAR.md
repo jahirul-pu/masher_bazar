@@ -1,8 +1,8 @@
-# MASIK BAZAR
+# MASHER BAZAR
 
 ## Product Requirements Document (PRD)
 
-**Product:** Masik Bazar
+**Product:** Masher Bazar
 **Product Category:** Monthly Grocery Commerce / Subscription Commerce
 **Primary Market:** Bangladesh
 **Platform:** Web-first, mobile-responsive; PWA-ready
@@ -15,22 +15,22 @@
 
 ## 1.1 Product Vision
 
-**Masik Bazar** is a monthly grocery commerce platform designed around a simple proposition:
+**Masher Bazar** is a monthly grocery commerce platform designed around a simple proposition:
 
-> **Customers should not have to shop for groceries every month. Masik Bazar should prepare, optimize, and deliver their monthly household market for them.**
+> **Customers should not have to shop for groceries every month. Masher Bazar should prepare, optimize, and deliver their monthly household market for them.**
 
-Instead of operating like a conventional online grocery store where customers search for individual products, Masik Bazar will allow customers to:
+Instead of operating like a conventional online grocery store where customers search for individual products, Masher Bazar will allow customers to:
 
 * Generate a monthly grocery basket
 * Set a household budget
 * Customize recommended quantities
-* Compare normal market price vs. Masik Bazar price
+* Compare normal market price vs. Masher Bazar price
 * Save money through bulk procurement
 * Schedule monthly delivery
 * Subscribe to recurring monthly baskets
 * Track their historical spending and savings
 * Receive intelligent reminders
-* Eventually purchase Masik Bazar private-label products
+* Eventually purchase Masher Bazar private-label products
 
 The long-term goal is to create a **household grocery operating system**, rather than another generic grocery marketplace.
 
@@ -55,7 +55,7 @@ Customers receive:
 * Transparent pricing
 * Household spending history
 
-## For Masik Bazar
+## For Masher Bazar
 
 The business is built around:
 
@@ -85,7 +85,7 @@ More Customers
 
 # 3. Product Positioning
 
-Masik Bazar should NOT position itself simply as:
+Masher Bazar should NOT position itself simply as:
 
 > "An online grocery store."
 
@@ -95,7 +95,7 @@ Instead:
 
 ### Brand concept
 
-**Masik Bazar**
+**Masher Bazar**
 
 Possible positioning lines:
 
@@ -194,7 +194,7 @@ Customers should not need to manually select 30–50 products.
 
 Every basket should communicate:
 
-**Regular Market Price → Masik Bazar Price → Customer Savings**
+**Regular Market Price → Masher Bazar Price → Customer Savings**
 
 ---
 
@@ -340,7 +340,7 @@ Example:
 
 ```text
 Regular Market       ৳6,430
-Masik Bazar          ৳5,890
+Masher Bazar          ৳5,890
 
 You Save             ৳540
 ```
@@ -367,7 +367,7 @@ Enable:
 
 Future section.
 
-> **Masik Bazar Essentials**
+> **Masher Bazar Essentials**
 
 ---
 
@@ -698,14 +698,14 @@ Every basket should calculate:
 
 Estimated standard selling price.
 
-### Masik Bazar Price
+### Masher Bazar Price
 
 Platform selling price.
 
 ### Customer Savings
 
 ```text
-Regular Price - Masik Bazar Price
+Regular Price - Masher Bazar Price
 ```
 
 ---
@@ -1299,7 +1299,7 @@ Phase 2/3.
 
 Brand:
 
-### Masik Bazar Essentials
+### Masher Bazar Essentials
 
 Potential products:
 
@@ -1326,7 +1326,7 @@ Benefits:
 
 Packaging should communicate:
 
-**Masik Bazar Essentials**
+**Masher Bazar Essentials**
 
 Example:
 
@@ -1896,7 +1896,7 @@ Potential future commercial arrangements, subject to transparent commercial term
 
 Future premium tier:
 
-### Masik Bazar Plus
+### Masher Bazar Plus
 
 Potential benefits:
 
@@ -2152,7 +2152,7 @@ The platform generates:
 
 ```text
 Regular Market      ৳6,430
-Masik Bazar         ৳5,890
+Masher Bazar         ৳5,890
 Savings             ৳540
 ```
 
@@ -2192,7 +2192,7 @@ That's the ideal long-term user experience.
 
 # 82. Differentiation Strategy
 
-Masik Bazar should differentiate itself through a combination of:
+Masher Bazar should differentiate itself through a combination of:
 
 ### 1. Monthly-first commerce
 
@@ -2228,7 +2228,7 @@ Long-term margin and differentiation.
 
 ---
 
-# 83. What Masik Bazar Should Avoid
+# 83. What Masher Bazar Should Avoid
 
 ## Do not become another generic grocery marketplace.
 
@@ -2376,7 +2376,7 @@ Higher Retention
 
 # 89. Long-Term Vision
 
-Masik Bazar can eventually evolve from:
+Masher Bazar can eventually evolve from:
 
 ### Phase 1
 
@@ -2408,13 +2408,13 @@ Household commerce ecosystem
 
 The ultimate concept:
 
-> **Masik Bazar knows what your household needs, how much it needs, when it needs it, and what price makes sense—then handles the procurement for you.**
+> **Masher Bazar knows what your household needs, how much it needs, when it needs it, and what price makes sense—then handles the procurement for you.**
 
 ---
 
 # 90. Final Product Definition
 
-## Masik Bazar is:
+## Masher Bazar is:
 
 **A personalized, budget-aware, subscription-driven monthly household grocery platform powered by bulk procurement and intelligent basket recommendations.**
 
@@ -2450,7 +2450,7 @@ Customers will repeat the same monthly purchase.
 
 ### Hypothesis 5
 
-Customers will eventually trust Masik Bazar to prepare their monthly market automatically.
+Customers will eventually trust Masher Bazar to prepare their monthly market automatically.
 
 If these five hypotheses are validated, the platform has the foundation to become a recurring-commerce business rather than a conventional grocery store.
 
