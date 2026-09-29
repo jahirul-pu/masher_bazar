@@ -334,3 +334,5 @@ export function predictDepletionDate(
   return results;
 }
 
+export * from './inventory.js';
+

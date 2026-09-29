@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 
@@ -25,6 +25,12 @@ export class ProductsController {
   ) {
     const isPrivate = isPrivateLabel !== undefined ? isPrivateLabel === 'true' : undefined;
     return this.productsService.getProducts(categoryId, search, isPrivate);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Add a new product to inventory' })
+  async createProduct(@Body() body: any) {
+    return this.productsService.createProduct(body);
   }
 
   @Get(':slug')

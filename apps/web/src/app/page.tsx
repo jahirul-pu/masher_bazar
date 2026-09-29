@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { OnboardingWizard, OnboardingState } from '@/components/OnboardingWizard';
@@ -11,6 +11,7 @@ import { B2bCorporateMess } from '@/components/B2bCorporateMess';
 import { Footer } from '@/components/Footer';
 import { Home, ChefHat, Building2 } from 'lucide-react';
 import { CookingFrequency, FoodPreference, MarketTier } from '@masik/shared-types';
+import { DEFAULT_INVENTORY_PRODUCTS, InventoryItem } from '@masik/business-rules';
 
 export default function HomePage() {
   const [lang, setLang] = useState<'bn' | 'en'>('bn');
@@ -178,6 +179,36 @@ export default function HomePage() {
   const [isBudgetOptimized, setIsBudgetOptimized] = useState(false);
   const [swappedCount, setSwappedCount] = useState(0);
 
+  // Background Inventory Catalog (defaults + items added in background via Admin)
+  const [inventoryCatalog, setInventoryCatalog] = useState<InventoryItem[]>(DEFAULT_INVENTORY_PRODUCTS);
+
+  // Sync with background inventory updates from Admin portal
+  useEffect(() => {
+    const syncCatalog = () => {
+      try {
+        const stored = localStorage.getItem('masik_inventory_catalog');
+        if (stored) {
+          const parsed: InventoryItem[] = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const defaultIds = new Set(DEFAULT_INVENTORY_PRODUCTS.map((p) => p.id));
+            const customOnly = parsed.filter((p) => !defaultIds.has(p.id));
+            setInventoryCatalog([...DEFAULT_INVENTORY_PRODUCTS, ...customOnly]);
+          }
+        }
+      } catch {
+        // fallback to defaults
+      }
+    };
+
+    syncCatalog();
+    window.addEventListener('storage', syncCatalog);
+    window.addEventListener('inventory_updated', syncCatalog);
+    return () => {
+      window.removeEventListener('storage', syncCatalog);
+      window.removeEventListener('inventory_updated', syncCatalog);
+    };
+  }, []);
+
   // Recalculate totals
   const totalMasik = basketItems.reduce((acc, i) => acc + i.unitMasikPrice * i.quantity, 0);
   const totalMarket = basketItems.reduce((acc, i) => acc + i.unitMrp * i.quantity, 0);
@@ -280,7 +311,7 @@ export default function HomePage() {
     window.scrollTo({ top: 750, behavior: 'smooth' });
   };
 
-  // Add Item to Basket (e.g. from Missing Staple Alert)
+  // Add Item to Basket (e.g. from Missing Staple Alert or Catalog)
   const handleAddItem = (newItem: DisplayBasketItem) => {
     setBasketItems((prev) => {
       const exists = prev.find((i) => i.variantId === newItem.variantId);
@@ -289,6 +320,22 @@ export default function HomePage() {
       }
       return [newItem, ...prev];
     });
+  };
+
+  // Swap / Change Product in Basket with Alternative from Inventory
+  const handleSwapItem = (oldVariantId: string, newItem: DisplayBasketItem) => {
+    setBasketItems((prev) =>
+      prev.map((item) => {
+        if (item.variantId === oldVariantId) {
+          return {
+            ...newItem,
+            quantity: item.quantity, // Preserve user's calibrated quantity
+          };
+        }
+        return item;
+      })
+    );
+    setSwappedCount((prev) => prev + 1);
   };
 
   // Meal Planner Calculation Handler (Section 67 PRD)
@@ -431,9 +478,11 @@ export default function HomePage() {
               lang={lang}
               items={basketItems}
               budget={onboarding.budget}
+              availableInventory={inventoryCatalog}
               onUpdateQty={handleUpdateQty}
               onRemoveItem={handleRemoveItem}
               onAddItem={handleAddItem}
+              onSwapItem={handleSwapItem}
               onOptimizeBudget={handleOptimizeBudget}
               isBudgetOptimized={isBudgetOptimized}
               swappedCount={swappedCount}
