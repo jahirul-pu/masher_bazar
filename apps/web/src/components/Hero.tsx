@@ -1,16 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Sparkles, ArrowRight, ShieldCheck, TrendingDown, RefreshCw } from 'lucide-react';
+import { Sparkles, ArrowRight, ShieldCheck, TrendingDown, RefreshCw, Check } from 'lucide-react';
 
 interface HeroProps {
   lang: 'bn' | 'en';
+  selectedSize?: number;
   onQuickAiPrompt: (prompt: string) => void;
   onSelectFamilyPreset: (size: number, budget: number) => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
   lang,
+  selectedSize = 4,
   onQuickAiPrompt,
   onSelectFamilyPreset,
 }) => {
@@ -98,27 +100,36 @@ export const Hero: React.FC<HeroProps> = ({
 
           {/* Quick Family Preset Chips */}
           <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider mr-1">
               {lang === 'bn' ? 'দ্রুত প্যাকেজ:' : 'Quick Packages:'}
             </span>
-            <button
-              onClick={() => onSelectFamilyPreset(2, 3500)}
-              className="px-4 py-2 rounded-xl bg-white hover:bg-masik-50 text-xs sm:text-sm font-semibold text-slate-700 border border-slate-200 hover:border-masik-300 transition-all shadow-sm"
-            >
-              👫 {lang === 'bn' ? 'ছোট পরিবার (১-২ জন)' : 'Small Family (1-2)'}
-            </button>
-            <button
-              onClick={() => onSelectFamilyPreset(4, 6000)}
-              className="px-4 py-2 rounded-xl bg-masik-100/70 hover:bg-masik-100 text-xs sm:text-sm font-bold text-masik-900 border border-masik-300 transition-all shadow-sm"
-            >
-              👨‍👩‍👧‍👦 {lang === 'bn' ? 'আদর্শ পরিবার (৩-৪ জন)' : 'Family (3-4)'}
-            </button>
-            <button
-              onClick={() => onSelectFamilyPreset(6, 9000)}
-              className="px-4 py-2 rounded-xl bg-white hover:bg-masik-50 text-xs sm:text-sm font-semibold text-slate-700 border border-slate-200 hover:border-masik-300 transition-all shadow-sm"
-            >
-              🏡 {lang === 'bn' ? 'বড় পরিবার (৫-৬ জন)' : 'Large Family (5-6)'}
-            </button>
+            {[
+              { size: 2, budget: 3500, icon: '👫', labelBn: 'ছোট পরিবার (১-২ জন)', labelEn: 'Small Family (1-2)' },
+              { size: 4, budget: 6000, icon: '👨‍👩‍👧‍👦', labelBn: 'আদর্শ পরিবার (৩-৪ জন)', labelEn: 'Family (3-4)' },
+              { size: 6, budget: 9000, icon: '🏡', labelBn: 'বড় পরিবার (৫-৬ জন)', labelEn: 'Large Family (5-6)' },
+            ].map((pkg) => {
+              const isSelected = selectedSize === pkg.size;
+              return (
+                <button
+                  key={pkg.size}
+                  type="button"
+                  onClick={() => onSelectFamilyPreset(pkg.size, pkg.budget)}
+                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer ${
+                    isSelected
+                      ? 'bg-masik-700 text-white border border-masik-700 shadow-md shadow-masik-700/25 ring-2 ring-masik-500/40 scale-[1.03]'
+                      : 'bg-white hover:bg-masik-50/90 text-slate-700 border border-slate-200 hover:border-masik-300'
+                  }`}
+                >
+                  <span className="text-base">{pkg.icon}</span>
+                  <span>{lang === 'bn' ? pkg.labelBn : pkg.labelEn}</span>
+                  {isSelected && (
+                    <span className="flex items-center justify-center w-4 h-4 rounded-full bg-white/25 text-white">
+                      <Check className="w-3 h-3 stroke-[3]" />
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 

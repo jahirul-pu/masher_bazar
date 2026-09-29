@@ -286,12 +286,13 @@ export default function HomePage() {
       preference: prompt.includes('রুটি') ? FoodPreference.ROTI_HEAVY : FoodPreference.STANDARD,
     }));
 
-    handleGenerateFromOnboarding();
+    handleGenerateFromOnboarding(size);
   };
 
   // Generate From Wizard
-  const handleGenerateFromOnboarding = () => {
-    const scale = onboarding.size / 4;
+  const handleGenerateFromOnboarding = (sizeOverride?: number) => {
+    const effectiveSize = sizeOverride !== undefined ? sizeOverride : onboarding.size;
+    const scale = effectiveSize / 4;
     const recalculated = initialBasketItems.map((item) => {
       let qty = item.quantity;
       if (item.unit === 'KG' && item.unitValue <= 5) {
@@ -395,10 +396,11 @@ export default function HomePage() {
         {/* Hero Section */}
         <Hero
           lang={lang}
+          selectedSize={onboarding.size}
           onQuickAiPrompt={handleQuickAiPrompt}
           onSelectFamilyPreset={(size, budget) => {
             setOnboarding((prev) => ({ ...prev, size, budget }));
-            handleGenerateFromOnboarding();
+            handleGenerateFromOnboarding(size);
           }}
         />
 
