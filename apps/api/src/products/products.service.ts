@@ -4,6 +4,7 @@ import { DEFAULT_INVENTORY_PRODUCTS, InventoryItem } from '@masik/business-rules
 
 @Injectable()
 export class ProductsService {
+  // Synchronized with separated categories from @masik/business-rules
   private inMemoryInventory: InventoryItem[] = [...DEFAULT_INVENTORY_PRODUCTS];
 
   constructor(private prisma: PrismaService) {}

@@ -152,22 +152,9 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
   };
 
   const filteredInventory = catalog.filter((prod) => {
-    // Category match
+    // Exact Category Match for separated categories
     if (swapModalItem && modalCategory === 'MATCHING') {
-      const targetCat = swapModalItem.category;
-      const isMatch =
-        prod.category === targetCat ||
-        (targetCat.includes('চাল') && prod.category.includes('চাল')) ||
-        (targetCat.includes('তেল') && prod.category.includes('তেল')) ||
-        (targetCat.includes('ডাল') && prod.category.includes('ডাল')) ||
-        (targetCat.includes('আটা') && prod.category.includes('আটা')) ||
-        (targetCat.includes('মসলা') && prod.category.includes('মসলা')) ||
-        (targetCat.includes('লবণ') && prod.category.includes('লবণ')) ||
-        (targetCat.includes('চিনি') && prod.category.includes('চিনি')) ||
-        (targetCat.includes('পরিচ্ছন্নতা') && prod.category.includes('পরিচ্ছন্নতা')) ||
-        (targetCat.includes('ব্যক্তিগত') && prod.category.includes('ব্যক্তিগত')) ||
-        (targetCat.includes('আলু') && prod.category.includes('আলু'));
-      if (!isMatch) return false;
+      if (prod.category !== swapModalItem.category) return false;
     } else if (modalCategory !== 'ALL' && modalCategory !== 'MATCHING') {
       if (prod.category !== modalCategory) return false;
     }

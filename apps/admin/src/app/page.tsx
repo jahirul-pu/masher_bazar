@@ -41,7 +41,7 @@ export default function AdminDashboardPage() {
   const [newProduct, setNewProduct] = useState({
     nameEn: '',
     nameBn: '',
-    category: 'চাল ও ডাল',
+    category: 'চাল',
     categorySlug: 'staples_rice',
     brand: 'Masher Bazar Essentials',
     unit: 'KG',
@@ -126,7 +126,7 @@ export default function AdminDashboardPage() {
     setNewProduct({
       nameEn: '',
       nameBn: '',
-      category: 'চাল ও ডাল',
+      category: 'চাল',
       categorySlug: 'staples_rice',
       brand: 'Masher Bazar Essentials',
       unit: 'KG',
@@ -487,8 +487,8 @@ export default function AdminDashboardPage() {
                 </div>
 
                 {/* Category Pills */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
-                  {['ALL', 'চাল ও ডাল', 'তেল ও ঘি', 'আটা ও ময়দা', 'তাজা আলু ও পেঁয়াজ', 'লবণ ও মসলা', 'পরিচ্ছন্নতা'].map((cat) => (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full scrollbar-none">
+                  {['ALL', 'চাল', 'ডাল', 'তেল', 'ঘি', 'আটা', 'ময়দা', 'আলু', 'পেঁয়াজ', 'লবণ', 'চিনি', 'মসলা', 'পরিচ্ছন্নতা', 'ব্যক্তিগত যত্ন', 'গৃহস্থালী টিস্যু'].map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}
@@ -640,14 +640,19 @@ export default function AdminDashboardPage() {
                           onChange={(e) => {
                             const val = e.target.value;
                             const slugMap: Record<string, string> = {
-                              'চাল ও ডাল': 'staples_rice',
-                              'তেল ও ঘি': 'cooking_oil',
-                              'আটা ও ময়দা': 'staples_flour',
-                              'তাজা আলু ও পেঁয়াজ': 'produce_potato',
-                              'লবণ ও মসলা': 'cooking_salt',
-                              'চিনি ও মসলা': 'grocery_sugar',
+                              'চাল': 'staples_rice',
+                              'ডাল': 'lentils_dal',
+                              'তেল': 'cooking_oil',
+                              'ঘি': 'dairy_ghee',
+                              'আটা': 'staples_flour',
+                              'ময়দা': 'staples_maida',
+                              'আলু': 'produce_potato',
+                              'পেঁয়াজ': 'produce_onion',
+                              'লবণ': 'cooking_salt',
+                              'চিনি': 'grocery_sugar',
+                              'মসলা': 'spices',
                               'পরিচ্ছন্নতা': 'cleaning_detergent',
-                              'ব্যক্তিগত যত্ন': 'cleaning_soap',
+                              'ব্যক্তিগত যত্ন': 'personal_care',
                               'গৃহস্থালী টিস্যু': 'household_tissue',
                             };
                             setNewProduct({
@@ -658,12 +663,17 @@ export default function AdminDashboardPage() {
                           }}
                           className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-teal-500"
                         >
-                          <option value="চাল ও ডাল">চাল ও ডাল (Rice & Lentils)</option>
-                          <option value="তেল ও ঘি">তেল ও ঘি (Edible Oil & Ghee)</option>
-                          <option value="আটা ও ময়দা">আটা ও ময়দা (Atta & Flour)</option>
-                          <option value="তাজা আলু ও পেঁয়াজ">তাজা আলু ও পেঁয়াজ (Produce)</option>
-                          <option value="লবণ ও মসলা">লবণ ও মসলা (Salt & Spices)</option>
-                          <option value="চিনি ও মসলা">চিনি ও মসলা (Sugar & Spices)</option>
+                          <option value="চাল">চাল (Rice)</option>
+                          <option value="ডাল">ডাল (Lentils / Dal)</option>
+                          <option value="তেল">তেল (Edible Oil)</option>
+                          <option value="ঘি">ঘি (Ghee)</option>
+                          <option value="আটা">আটা (Whole Wheat Atta)</option>
+                          <option value="ময়দা">ময়দা (Refined Flour / Maida)</option>
+                          <option value="আলু">আলু (Potato)</option>
+                          <option value="পেঁয়াজ">পেঁয়াজ (Onion)</option>
+                          <option value="লবণ">লবণ (Salt)</option>
+                          <option value="চিনি">চিনি (Sugar)</option>
+                          <option value="মসলা">মসলা (Spices)</option>
                           <option value="পরিচ্ছন্নতা">পরিচ্ছন্নতা (Cleaning & Detergent)</option>
                           <option value="ব্যক্তিগত যত্ন">ব্যক্তিগত যত্ন (Personal Care & Soap)</option>
                           <option value="গৃহস্থালী টিস্যু">গৃহস্থালী টিস্যু (Tissue & Paper)</option>
