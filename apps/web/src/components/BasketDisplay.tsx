@@ -34,6 +34,36 @@ export interface DisplayBasketItem extends BasketItem {
   unitValue: number;
 }
 
+export const CATEGORY_NAMES_EN: Record<string, string> = {
+  'চাল': 'Rice',
+  'ডাল': 'Lentils / Dal',
+  'তেল': 'Edible Oil',
+  'ঘি': 'Ghee & Dairy',
+  'আটা': 'Whole Wheat Atta',
+  'ময়দা': 'Refined Flour / Maida',
+  'আলু': 'Potato',
+  'পেঁয়াজ': 'Onion',
+  'লবণ': 'Salt',
+  'চিনি': 'Sugar',
+  'মসলা': 'Spices',
+  'পরিচ্ছন্নতা': 'Cleaning & Laundry',
+  'ব্যক্তিগত যত্ন': 'Personal Care',
+  'গৃহস্থালী টিস্যু': 'Household Tissue',
+  'চাল ও ডাল': 'Rice & Lentils',
+  'তেল ও ঘি': 'Edible Oil & Ghee',
+  'আটা ও ময়দা': 'Atta & Flour',
+  'তাজা আলু ও পেঁয়াজ': 'Produce (Potato & Onion)',
+  'লবণ ও মসলা': 'Salt & Spices',
+  'চিনি ও মসলা': 'Sugar & Spices',
+};
+
+export const getCategoryName = (category: string, lang: 'bn' | 'en'): string => {
+  if (lang === 'en') {
+    return CATEGORY_NAMES_EN[category] || category;
+  }
+  return category;
+};
+
 interface BasketDisplayProps {
   lang: 'bn' | 'en';
   items: DisplayBasketItem[];
@@ -336,11 +366,13 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                 >
                   {/* Title & Category */}
                   <div className="flex-1">
-                    <span className="text-[10px] font-bold text-masik-600 uppercase tracking-wider block">
-                      {item.category}
-                    </span>
-                    <h4 className="text-sm sm:text-base font-bold text-slate-800 leading-snug">
-                      {lang === 'bn' ? item.nameBn : item.nameEn}
+                    <div className="mb-1.5">
+                      <span className="inline-flex items-center px-3 py-0.5 rounded-lg text-sm font-extrabold text-masik-800 bg-masik-100/90 border border-masik-300/90 shadow-2xs tracking-wide uppercase">
+                        {getCategoryName(item.category, lang)}
+                      </span>
+                    </div>
+                    <h4 className="text-base sm:text-lg font-bold text-slate-800 leading-snug">
+                      {lang === 'bn' ? item.nameBn : (item.nameEn || item.nameBn)}
                     </h4>
                     <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-1">
                       <span>
@@ -676,8 +708,11 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                       <span className="font-semibold text-slate-500">
                         {lang === 'bn' ? 'বর্তমান পণ্য:' : 'Current Item:'}
                       </span>
+                      <span className="font-bold text-masik-700 bg-masik-50 px-2.5 py-0.5 rounded-md border border-masik-200">
+                        {getCategoryName(swapModalItem.category, lang)}
+                      </span>
                       <span className="font-bold text-slate-800 bg-white px-2 py-0.5 rounded-lg border border-slate-200 shadow-2xs">
-                        {lang === 'bn' ? swapModalItem.nameBn : swapModalItem.nameEn} (৳{swapModalItem.unitMasikPrice})
+                        {lang === 'bn' ? swapModalItem.nameBn : (swapModalItem.nameEn || swapModalItem.nameBn)} (৳{swapModalItem.unitMasikPrice})
                       </span>
                       <span className="text-slate-400">•</span>
                       <span className="font-medium text-masik-700">
@@ -744,7 +779,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                     }`}
                   >
                     <ArrowLeftRight className="w-3.5 h-3.5" />
-                    <span>{lang === 'bn' ? `একই ক্যাটাগরি (${swapModalItem.category})` : `Same Category (${swapModalItem.category})`}</span>
+                    <span>{lang === 'bn' ? `একই ক্যাটাগরি (${swapModalItem.category})` : `Same Category (${getCategoryName(swapModalItem.category, lang)})`}</span>
                   </button>
                 )}
 
@@ -771,7 +806,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
-                    {cat}
+                    {getCategoryName(cat, lang)}
                   </button>
                 ))}
               </div>
@@ -812,8 +847,8 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                       {/* Product Details */}
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                          <span className="text-[10px] font-bold text-masik-700 bg-masik-50 px-2 py-0.5 rounded-md border border-masik-100">
-                            {inv.category}
+                          <span className="text-xs font-bold text-masik-700 bg-masik-50 px-2 py-0.5 rounded-md border border-masik-100">
+                            {getCategoryName(inv.category, lang)}
                           </span>
                           <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
                             {inv.brand}
@@ -829,10 +864,10 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                         </div>
 
                         <h4 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
-                          {lang === 'bn' ? inv.nameBn : inv.nameEn}
+                          {lang === 'bn' ? inv.nameBn : (inv.nameEn || inv.nameBn)}
                         </h4>
                         <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                          {inv.nameEn}
+                          {lang === 'bn' ? inv.nameEn : inv.nameBn}
                         </p>
 
                         <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-2">
