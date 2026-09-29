@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShoppingBag, MapPin, Globe, User, Phone, X, CheckCircle, ShieldCheck, LogOut } from 'lucide-react';
+import { formatPrice } from '@/utils/formatters';
 
 interface NavbarProps {
   lang: 'bn' | 'en';
@@ -76,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="flex items-center gap-2 sm:gap-4">
               {totalSavings > 0 && (
                 <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-900 rounded-full text-xs font-bold border border-amber-200 animate-pulse">
-                  <span>🔥 {lang === 'bn' ? 'সাশ্রয়:' : 'Saving:'} ৳{totalSavings.toLocaleString()}</span>
+                  <span>🔥 {lang === 'bn' ? 'সাশ্রয়:' : 'Saving:'} {formatPrice(totalSavings, lang)}</span>
                 </div>
               )}
 
@@ -108,7 +109,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                     <div className="hidden sm:block text-left">
                       <span className="text-xs font-bold text-slate-800 block leading-tight">{loggedInUser.name}</span>
-                      <span className="text-[10px] text-emerald-700 font-semibold block">৳{loggedInUser.credits} ক্রেডিট বোনাস</span>
+                      <span className="text-[10px] text-emerald-700 font-semibold block">
+                        {formatPrice(loggedInUser.credits, lang)} {lang === 'bn' ? 'ক্রেডিট বোনাস' : 'Bonus Credits'}
+                      </span>
                     </div>
                   </div>
                   <button

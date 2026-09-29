@@ -15,6 +15,7 @@ import {
   Percent,
 } from 'lucide-react';
 import { DisplayBasketItem } from './BasketDisplay';
+import { formatPrice, formatNumber, toBengaliNumber } from '@/utils/formatters';
 
 interface B2bCorporateMessProps {
   lang: 'bn' | 'en';
@@ -144,7 +145,7 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
   };
 
   const handleCopyMessWhatsapp = () => {
-    const text = `📢 মাসের বাজার মেস হিসাব (মেম্বার: ${messMembers} জন)\nমোট বাজার: ৳${totalMessCost.toLocaleString()}\nজনপ্রতি খরচ: ৳${perMemberCost.toLocaleString()}\nচাল: ${messRiceKg}kg, তেল: ${messOilLiters}L, ডাল: ${messDalKg}kg, আলু: ${messPotatoKg}kg\nঅর্ডার করতে ভিজিট করুন: https://masherbazar.com`;
+    const text = `📢 মাসের বাজার মেস হিসাব (মেম্বার: ${formatNumber(messMembers, lang)} জন)\nমোট বাজার: ${formatPrice(totalMessCost, lang)}\nজনপ্রতি খরচ: ${formatPrice(perMemberCost, lang)}\nচাল: ${formatNumber(messRiceKg, lang)}kg, তেল: ${formatNumber(messOilLiters, lang)}L, ডাল: ${formatNumber(messDalKg, lang)}kg, আলু: ${formatNumber(messPotatoKg, lang)}kg\nঅর্ডার করতে ভিজিট করুন: https://masherbazar.com`;
     navigator.clipboard.writeText(text);
     setMessCopied(true);
     setTimeout(() => setMessCopied(false), 3000);
@@ -216,7 +217,7 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
                       messMembers === num ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100'
                     }`}
                   >
-                    {num}
+                    {formatNumber(num, lang)}
                   </button>
                 ))}
               </div>
@@ -227,32 +228,32 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
               <span className="text-xs font-semibold text-slate-500 block mb-1">মিনিকেট চাল</span>
-              <span className="text-xl font-black text-slate-800 block">{messRiceKg} কেজি</span>
-              <span className="text-xs font-bold text-emerald-600 block mt-1">৳{messRiceCost}</span>
+              <span className="text-xl font-black text-slate-800 block">{formatNumber(messRiceKg, lang)} কেজি</span>
+              <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messRiceCost, lang)}</span>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
               <span className="text-xs font-semibold text-slate-500 block mb-1">সয়াবিন ভোজ্য তেল</span>
-              <span className="text-xl font-black text-slate-800 block">{messOilLiters} লিটার</span>
-              <span className="text-xs font-bold text-emerald-600 block mt-1">৳{messOilCost}</span>
+              <span className="text-xl font-black text-slate-800 block">{formatNumber(messOilLiters, lang)} লিটার</span>
+              <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messOilCost, lang)}</span>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
               <span className="text-xs font-semibold text-slate-500 block mb-1">দেশি মসুর ডাল</span>
-              <span className="text-xl font-black text-slate-800 block">{messDalKg} কেজি</span>
-              <span className="text-xs font-bold text-emerald-600 block mt-1">৳{messDalCost}</span>
+              <span className="text-xl font-black text-slate-800 block">{formatNumber(messDalKg, lang)} কেজি</span>
+              <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messDalCost, lang)}</span>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
               <span className="text-xs font-semibold text-slate-500 block mb-1">মুন্সীগঞ্জ আলু</span>
-              <span className="text-xl font-black text-slate-800 block">{messPotatoKg} কেজি</span>
-              <span className="text-xs font-bold text-emerald-600 block mt-1">৳{messPotatoCost}</span>
+              <span className="text-xl font-black text-slate-800 block">{formatNumber(messPotatoKg, lang)} কেজি</span>
+              <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messPotatoCost, lang)}</span>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
               <span className="text-xs font-semibold text-slate-500 block mb-1">পাবনার দেশি পেঁয়াজ</span>
-              <span className="text-xl font-black text-slate-800 block">{messOnionKg} কেজি</span>
-              <span className="text-xs font-bold text-emerald-600 block mt-1">৳{messOnionCost}</span>
+              <span className="text-xl font-black text-slate-800 block">{formatNumber(messOnionKg, lang)} কেজি</span>
+              <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messOnionCost, lang)}</span>
             </div>
           </div>
 
@@ -260,15 +261,15 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
           <div className="bg-gradient-to-r from-indigo-700 via-indigo-800 to-slate-900 rounded-3xl p-6 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <span className="text-xs text-indigo-200 uppercase tracking-wider font-semibold block mb-1">
-                {messMembers} জন সদস্যের মেস হিসাব
+                {formatNumber(messMembers, lang)} জন সদস্যের মেস হিসাব
               </span>
               <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-black">৳{totalMessCost.toLocaleString()}</span>
+                <span className="text-3xl font-black">{formatPrice(totalMessCost, lang)}</span>
                 <span className="text-xs text-indigo-200">মোট মাসের বাজার</span>
               </div>
               <div className="mt-2 inline-flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl backdrop-blur-sm">
                 <span className="text-xs text-indigo-100">জনপ্রতি খরচ:</span>
-                <span className="text-base font-black text-emerald-300">৳{perMemberCost.toLocaleString()}</span>
+                <span className="text-base font-black text-emerald-300">{formatPrice(perMemberCost, lang)}</span>
               </div>
             </div>
 
@@ -317,7 +318,7 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
                       staffCount === count ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100'
                     }`}
                   >
-                    {count} জন
+                    {formatNumber(count, lang)} {lang === 'bn' ? 'জন' : 'staff'}
                   </button>
                 ))}
               </div>
@@ -356,26 +357,26 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
               {/* Monthly Office Consumption List */}
               <div className="border-t border-slate-100 pt-3">
                 <span className="text-xs font-bold text-slate-700 block mb-2">
-                  {staffCount} জন কর্মীর মাসিক গড় অফিস প্যান্ট্রি প্রয়োজন:
+                  {formatNumber(staffCount, lang)} জন কর্মীর মাসিক গড় অফিস প্যান্ট্রি প্রয়োজন:
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    ☕ ইস্পাহানি চা: <span className="font-bold">{teaPacks} প্যাক</span>
+                    ☕ ইস্পাহানি চা: <span className="font-bold">{formatNumber(teaPacks, lang)} প্যাক</span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🥛 ডানো মিল্ক: <span className="font-bold">{milkPacks} কেজি</span>
+                    🥛 ডানো মিল্ক: <span className="font-bold">{formatNumber(milkPacks, lang)} কেজি</span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🍚 ফ্রেশ চিনি: <span className="font-bold">{sugarKg} কেজি</span>
+                    🍚 ফ্রেশ চিনি: <span className="font-bold">{formatNumber(sugarKg, lang)} কেজি</span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🧻 বসুন্ধরা টিস্যু: <span className="font-bold">{tissueBoxes} বক্স</span>
+                    🧻 বসুন্ধরা টিস্যু: <span className="font-bold">{formatNumber(tissueBoxes, lang)} বক্স</span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🍪 কুকিজ ও বিস্কুট: <span className="font-bold">{biscuitsPacks} প্যাক</span>
+                    🍪 কুকিজ ও বিস্কুট: <span className="font-bold">{formatNumber(biscuitsPacks, lang)} প্যাক</span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🧴 হারপিক ও ফ্লোর ক্লিনার: <span className="font-bold">{cleanerPacks} প্যাক</span>
+                    🧴 হারপিক ও ফ্লোর ক্লিনার: <span className="font-bold">{formatNumber(cleanerPacks, lang)} প্যাক</span>
                   </div>
                 </div>
               </div>
@@ -393,11 +394,11 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between text-indigo-200">
                   <span>প্যান্ট্রি সাবটোটাল:</span>
-                  <span className="font-bold">৳{corporateSubtotal.toLocaleString()}</span>
+                  <span className="font-bold">{formatPrice(corporateSubtotal, lang)}</span>
                 </div>
                 <div className="flex justify-between text-indigo-200">
                   <span>সরকারি ভ্যাট (৫%):</span>
-                  <span className="font-bold">৳{corporateVat.toLocaleString()}</span>
+                  <span className="font-bold">{formatPrice(corporateVat, lang)}</span>
                 </div>
                 <div className="flex justify-between text-indigo-200">
                   <span>ডেলিভারি (ঢাকা মেট্রো):</span>
@@ -405,7 +406,7 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
                 </div>
                 <div className="flex justify-between text-base font-black text-white pt-2 border-t border-indigo-800">
                   <span>সর্বমোট বিল:</span>
-                  <span className="text-emerald-300">৳{corporateTotal.toLocaleString()}</span>
+                  <span className="text-emerald-300">{formatPrice(corporateTotal, lang)}</span>
                 </div>
               </div>
 

@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { BasketItem, PaymentMethod } from '@masik/shared-types';
 import { DEFAULT_INVENTORY_PRODUCTS, InventoryItem } from '@masik/business-rules';
+import { formatPrice, formatNumber, toBengaliNumber } from '@/utils/formatters';
 
 export interface DisplayBasketItem extends BasketItem {
   nameEn: string;
@@ -144,9 +145,9 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
     const diff = inv.masikPrice - swapModalItem.unitMasikPrice;
     const diffMsg =
       diff < 0
-        ? ` (৳${Math.abs(diff)} সাশ্রয় হলো!)`
+        ? ` (${formatPrice(Math.abs(diff), lang)} সাশ্রয় হলো!)`
         : diff > 0
-        ? ` (+৳${diff} প্রিমিয়াম যুক্ত হলো)`
+        ? ` (+${formatPrice(diff, lang)} প্রিমিয়াম যুক্ত হলো)`
         : '';
     setSwapToast(
       lang === 'bn'
@@ -245,11 +246,11 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
         </p>
         <div className="bg-amber-50 rounded-2xl p-4 border border-amber-200 inline-block mb-6">
           <p className="text-xs font-bold text-amber-900">
-            🎉 {lang === 'bn' ? `এই অর্ডারে আপনার সাশ্রয়: ৳${totalSavings.toLocaleString()}` : `Total savings on this order: ৳${totalSavings.toLocaleString()}`}
+            🎉 {lang === 'bn' ? `এই অর্ডারে আপনার সাশ্রয়: ${formatPrice(totalSavings, lang)}` : `Total savings on this order: ${formatPrice(totalSavings, lang)}`}
           </p>
           {appliedCredits > 0 && (
             <p className="text-[11px] font-bold text-emerald-800 mt-1">
-              ✓ {lang === 'bn' ? `৳${appliedCredits} মার্কেট ক্রেডিট রিডিম করা হয়েছে` : `৳${appliedCredits} Market Credits successfully redeemed`}
+              ✓ {lang === 'bn' ? `${formatPrice(appliedCredits, lang)} মার্কেট ক্রেডিট রিডিম করা হয়েছে` : `${formatPrice(appliedCredits, lang)} Market Credits successfully redeemed`}
             </p>
           )}
         </div>
@@ -280,7 +281,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
               </div>
               <p className="text-xs text-slate-500 mt-1">
                 {lang === 'bn'
-                  ? `${items.length}টি নিত্যপ্রয়োজনীয় খাদ্য ও গৃহস্থালী পণ্য`
+                  ? `${formatNumber(items.length, lang)}টি নিত্যপ্রয়োজনীয় খাদ্য ও গৃহস্থালী পণ্য`
                   : `${items.length} staple household and grocery items`}
               </p>
             </div>
@@ -289,7 +290,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
             {isOverBudget ? (
               <div className="flex items-center gap-3">
                 <span className="text-xs text-amber-700 font-semibold bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
-                  ⚠️ {lang === 'bn' ? `বাজেটের চেয়ে ৳${(totalMasik - budget).toLocaleString()} বেশি` : `৳${(totalMasik - budget).toLocaleString()} over budget`}
+                  ⚠️ {lang === 'bn' ? `বাজেটের চেয়ে ${formatPrice(totalMasik - budget, lang)} বেশি` : `${formatPrice(totalMasik - budget, lang)} over budget`}
                 </span>
                 <button
                   onClick={onOptimizeBudget}
@@ -304,7 +305,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                 <CheckCircle className="w-4 h-4 text-emerald-600" />
                 <span>
                   {lang === 'bn'
-                    ? `বাজেটের সাথে অপটিমাইজড (${swappedCount}টি বিকল্প পণ্য)`
+                    ? `বাজেটের সাথে অপটিমাইজড (${formatNumber(swappedCount, lang)}টি বিকল্প পণ্য)`
                     : `Budget Optimized (${swappedCount} items substituted)`}
                 </span>
               </div>
@@ -347,7 +348,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                 className="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-sm shrink-0 transition-all"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>{lang === 'bn' ? '+ হুইল ডিটারজেন্ট যোগ করুন (৳৩৩০)' : '+ Add Detergent (৳330)'}</span>
+                <span>{lang === 'bn' ? `+ হুইল ডিটারজেন্ট যোগ করুন (${formatPrice(330, lang)})` : `+ Add Detergent (${formatPrice(330, lang)})`}</span>
               </button>
             </div>
           )}
@@ -376,14 +377,14 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                     </h4>
                     <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-1">
                       <span>
-                        {lang === 'bn' ? 'প্রতি ইউনিট:' : 'Unit:'} ৳{item.unitMasikPrice}
+                        {lang === 'bn' ? 'প্রতি ইউনিট:' : 'Unit:'} {formatPrice(item.unitMasikPrice, lang)}
                       </span>
                       <span className="line-through text-slate-400">
-                        ৳{item.unitMrp}
+                        {formatPrice(item.unitMrp, lang)}
                       </span>
                       {lineSaving > 0 && (
                         <span className="text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded text-[11px]">
-                          {lang === 'bn' ? `সাশ্রয় ৳${lineSaving}` : `Save ৳${lineSaving}`}
+                          {lang === 'bn' ? `সাশ্রয় ${formatPrice(lineSaving, lang)}` : `Save ${formatPrice(lineSaving, lang)}`}
                         </span>
                       )}
                     </div>
@@ -414,7 +415,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                         <Minus className="w-3.5 h-3.5" />
                       </button>
                       <span className="w-10 text-center font-extrabold text-xs sm:text-sm text-slate-800">
-                        {item.quantity}
+                        {formatNumber(item.quantity, lang)}
                       </span>
                       <button
                         onClick={() => onUpdateQty(item.variantId, 1)}
@@ -428,10 +429,10 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                     {/* Subtotal */}
                     <div className="text-right min-w-[80px]">
                       <span className="text-sm sm:text-base font-black text-slate-900 block">
-                        ৳{lineTotal.toLocaleString()}
+                        {formatPrice(lineTotal, lang)}
                       </span>
                       <span className="text-[11px] text-slate-400 line-through block">
-                        ৳{lineMarket.toLocaleString()}
+                        {formatPrice(lineMarket, lang)}
                       </span>
                     </div>
 
@@ -510,28 +511,28 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
             <div className="flex items-center justify-between text-sm text-slate-600">
               <span>{lang === 'bn' ? 'সাধারণ বাজারের মূল্য:' : 'Regular Market Price:'}</span>
               <span className="font-semibold line-through text-slate-400">
-                ৳{totalMarket.toLocaleString()}
+                {formatPrice(totalMarket, lang)}
               </span>
             </div>
 
             <div className="flex items-center justify-between text-sm text-slate-700">
               <span>{lang === 'bn' ? 'মাসের বাজার মূল মূল্য:' : 'Masher Base Price:'}</span>
               <span className="font-bold text-slate-800">
-                ৳{totalMasik.toLocaleString()}
+                {formatPrice(totalMasik, lang)}
               </span>
             </div>
 
             {appliedCredits > 0 && (
               <div className="flex items-center justify-between text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1.5 rounded-xl border border-amber-200">
                 <span>{lang === 'bn' ? 'মার্কেট ক্রেডিট ডিসকাউন্ট:' : 'Loyalty Credit Applied:'}</span>
-                <span>-৳{appliedCredits}</span>
+                <span>-{formatPrice(appliedCredits, lang)}</span>
               </div>
             )}
 
             <div className="flex items-center justify-between text-base font-bold text-slate-900 pt-1">
               <span>{lang === 'bn' ? 'পরিশোধযোগ্য মূল্য:' : 'Final Payable:'}</span>
               <span className="text-xl font-black text-masik-700">
-                ৳{payableMasik.toLocaleString()}
+                {formatPrice(payableMasik, lang)}
               </span>
             </div>
 
@@ -551,11 +552,11 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                   {lang === 'bn' ? 'আপনার নিশ্চিত সাশ্রয়' : 'Total Net Savings'}
                 </span>
                 <span className="text-2xl font-black block">
-                  ৳{totalSavings.toLocaleString()}
+                  {formatPrice(totalSavings, lang)}
                 </span>
               </div>
               <div className="text-right bg-white/20 px-3 py-1.5 rounded-xl backdrop-blur-sm">
-                <span className="text-xs font-bold block">{savingsPercent}%</span>
+                <span className="text-xs font-bold block">{formatNumber(savingsPercent, lang)}%</span>
                 <span className="text-[10px] text-emerald-100 block">{lang === 'bn' ? 'সাশ্রয়' : 'Saved'}</span>
               </div>
             </div>
@@ -572,7 +573,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
               />
               <div>
                 <span className="text-xs font-bold text-amber-950 block">
-                  💰 {lang === 'bn' ? `মার্কেট ক্রেডিট ব্যবহার করুন (ব্যালেন্স: ৳${availableCredits})` : `Redeem Market Credits (Balance: ৳${availableCredits})`}
+                  💰 {lang === 'bn' ? `মার্কেট ক্রেডিট ব্যবহার করুন (ব্যালেন্স: ${formatPrice(availableCredits, lang)})` : `Redeem Market Credits (Balance: ${formatPrice(availableCredits, lang)})`}
                 </span>
                 <span className="text-[11px] text-amber-800 block mt-0.5">
                   {lang === 'bn'
@@ -712,7 +713,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                         {getCategoryName(swapModalItem.category, lang)}
                       </span>
                       <span className="font-bold text-slate-800 bg-white px-2 py-0.5 rounded-lg border border-slate-200 shadow-2xs">
-                        {lang === 'bn' ? swapModalItem.nameBn : (swapModalItem.nameEn || swapModalItem.nameBn)} (৳{swapModalItem.unitMasikPrice})
+                        {lang === 'bn' ? swapModalItem.nameBn : (swapModalItem.nameEn || swapModalItem.nameBn)} ({formatPrice(swapModalItem.unitMasikPrice, lang)})
                       </span>
                       <span className="text-slate-400">•</span>
                       <span className="font-medium text-masik-700">
@@ -891,10 +892,10 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                         <div className="text-right">
                           <div className="flex items-baseline justify-end gap-1.5">
                             <span className="text-lg font-black text-slate-900">
-                              ৳{inv.masikPrice.toLocaleString()}
+                              {formatPrice(inv.masikPrice, lang)}
                             </span>
                             <span className="text-xs text-slate-400 line-through">
-                              ৳{inv.mrp.toLocaleString()}
+                              {formatPrice(inv.mrp, lang)}
                             </span>
                           </div>
 
@@ -903,11 +904,11 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
                             <div className="mt-1">
                               {priceDiff < 0 ? (
                                 <span className="inline-block text-[11px] font-bold text-emerald-800 bg-emerald-100/90 px-2 py-0.5 rounded-md border border-emerald-300">
-                                  {lang === 'bn' ? `৳${Math.abs(priceDiff)} সাশ্রয়` : `Save ৳${Math.abs(priceDiff)}`}
+                                  {lang === 'bn' ? `${formatPrice(Math.abs(priceDiff), lang)} সাশ্রয়` : `Save ${formatPrice(Math.abs(priceDiff), lang)}`}
                                 </span>
                               ) : priceDiff > 0 ? (
                                 <span className="inline-block text-[11px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
-                                  {lang === 'bn' ? `+৳${priceDiff} প্রিমিয়াম` : `+৳${priceDiff}`}
+                                  {lang === 'bn' ? `+${formatPrice(priceDiff, lang)} প্রিমিয়াম` : `+${formatPrice(priceDiff, lang)}`}
                                 </span>
                               ) : (
                                 <span className="inline-block text-[11px] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ChefHat, Sparkles, ArrowRight, Utensils, Check } from 'lucide-react';
+import { formatNumber } from '@/utils/formatters';
 
 interface MealPlannerProps {
   lang: 'bn' | 'en';
@@ -73,7 +74,7 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-xs font-bold text-slate-700 block mb-1">🍗 মুরগির মাংস (সপ্তাহে)</span>
           <div className="flex items-center justify-between mt-2">
-            <span className="text-xl font-black text-emerald-700">{chickenDays} দিন</span>
+            <span className="text-xl font-black text-emerald-700">{formatNumber(chickenDays, lang)} দিন</span>
             <div className="flex gap-1">
               {[1, 2, 3, 4].map((d) => (
                 <button
@@ -83,19 +84,19 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
                     chickenDays === d ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 border-slate-200'
                   }`}
                 >
-                  {d}
+                  {formatNumber(d, lang)}
                 </button>
               ))}
             </div>
           </div>
-          <span className="text-[10px] text-slate-400 block mt-2">মাসে প্রায় {chickenMeals}টি মিল</span>
+          <span className="text-[10px] text-slate-400 block mt-2">মাসে প্রায় {formatNumber(chickenMeals, lang)}টি মিল</span>
         </div>
 
         {/* Fish Curry */}
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-xs font-bold text-slate-700 block mb-1">🐟 মাছের তরকারি (সপ্তাহে)</span>
           <div className="flex items-center justify-between mt-2">
-            <span className="text-xl font-black text-emerald-700">{fishDays} দিন</span>
+            <span className="text-xl font-black text-emerald-700">{formatNumber(fishDays, lang)} দিন</span>
             <div className="flex gap-1">
               {[1, 2, 3, 4].map((d) => (
                 <button
@@ -105,19 +106,19 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
                     fishDays === d ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 border-slate-200'
                   }`}
                 >
-                  {d}
+                  {formatNumber(d, lang)}
                 </button>
               ))}
             </div>
           </div>
-          <span className="text-[10px] text-slate-400 block mt-2">মাসে প্রায় {fishMeals}টি মিল</span>
+          <span className="text-[10px] text-slate-400 block mt-2">মাসে প্রায় {formatNumber(fishMeals, lang)}টি মিল</span>
         </div>
 
         {/* Khichuri */}
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <span className="text-xs font-bold text-slate-700 block mb-1">🍲 ভুনা খিচুড়ি (সপ্তাহে)</span>
           <div className="flex items-center justify-between mt-2">
-            <span className="text-xl font-black text-emerald-700">{khichuriDays} দিন</span>
+            <span className="text-xl font-black text-emerald-700">{formatNumber(khichuriDays, lang)} দিন</span>
             <div className="flex gap-1">
               {[0, 1, 2, 3].map((d) => (
                 <button
@@ -127,12 +128,12 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
                     khichuriDays === d ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 border-slate-200'
                   }`}
                 >
-                  {d}
+                  {formatNumber(d, lang)}
                 </button>
               ))}
             </div>
           </div>
-          <span className="text-[10px] text-slate-400 block mt-2">মাসে প্রায় {khichuriMeals}টি মিল</span>
+          <span className="text-[10px] text-slate-400 block mt-2">মাসে প্রায় {formatNumber(khichuriMeals, lang)}টি মিল</span>
         </div>
 
         {/* Breakfast Roti */}
@@ -159,16 +160,16 @@ export const MealPlanner: React.FC<MealPlannerProps> = ({
             <span>প্রয়োজনীয় কাঁচামাল:</span>
           </span>
           <span className="bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-            🍚 চাল: {calculatedRiceKg} কেজি
+            🍚 চাল: {formatNumber(calculatedRiceKg, lang)} কেজি
           </span>
           <span className="bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-            🛢️ তেল: {calculatedOilL} লিটার
+            🛢️ তেল: {formatNumber(calculatedOilL, lang)} লিটার
           </span>
           <span className="bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-            🥣 ডাল: {calculatedDalKg} কেজি
+            🥣 ডাল: {formatNumber(calculatedDalKg, lang)} কেজি
           </span>
           <span className="bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-            🌾 আটা: {calculatedAttaKg} কেজি
+            🌾 আটা: {formatNumber(calculatedAttaKg, lang)} কেজি
           </span>
         </div>
 

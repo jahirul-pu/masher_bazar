@@ -3,6 +3,7 @@
 import React from 'react';
 import { Users, Utensils, DollarSign, Sparkles, Award } from 'lucide-react';
 import { CookingFrequency, FoodPreference, MarketTier } from '@masik/shared-types';
+import { formatPrice, formatNumber } from '@/utils/formatters';
 
 export interface OnboardingState {
   size: number;
@@ -64,7 +65,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                     : 'bg-white text-slate-700 border-slate-200 hover:border-masik-300'
                 }`}
               >
-                {s}{s === 8 ? '+' : ''}
+                {formatNumber(s, lang)}{s === 8 ? '+' : ''}
               </button>
             ))}
           </div>
@@ -132,7 +133,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
               <span>{lang === 'bn' ? 'মাসিক মুদি বাজেট' : 'Monthly Grocery Budget'}</span>
             </label>
             <span className="text-base font-extrabold text-masik-700 bg-masik-50 px-3 py-0.5 rounded-lg border border-masik-200">
-              ৳{state.budget.toLocaleString()}
+              {formatPrice(state.budget, lang)}
             </span>
           </div>
           <input
@@ -145,9 +146,9 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
             className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-masik-600"
           />
           <div className="flex justify-between text-[11px] text-slate-400 mt-1">
-            <span>৳৩,০০০</span>
-            <span>৳৬,০০০ (গড় পরিবার)</span>
-            <span>৳১০,০০০+</span>
+            <span>{formatPrice(3000, lang)}</span>
+            <span>{lang === 'bn' ? `${formatPrice(6000, lang)} (গড় পরিবার)` : `${formatPrice(6000, lang)} (Average)`}</span>
+            <span>{formatPrice(10000, lang)}+</span>
           </div>
         </div>
 

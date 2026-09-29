@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { TrendingUp, Award, Calendar, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { formatPrice, formatNumber, toBengaliNumber } from '@/utils/formatters';
 
 interface SavingsDashboardProps {
   lang: 'bn' | 'en';
@@ -51,7 +52,9 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
             <span className="text-xs text-slate-500 font-semibold block mb-1">
               {lang === 'bn' ? 'মোট সম্পন্ন অর্ডার' : 'Total Monthly Orders'}
             </span>
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 block">৮টি</span>
+            <span className="text-2xl sm:text-3xl font-black text-slate-900 block">
+              {lang === 'bn' ? `${toBengaliNumber(8)}টি` : '8 Orders'}
+            </span>
             <span className="text-[11px] text-emerald-600 font-bold mt-1 block">✓ ১০০% সফল ডেলিভারি</span>
           </div>
 
@@ -59,15 +62,17 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
             <span className="text-xs text-slate-500 font-semibold block mb-1">
               {lang === 'bn' ? 'মোট খরচ' : 'Total Spent'}
             </span>
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 block">৳৪৮,৯২০</span>
-            <span className="text-[11px] text-slate-400 mt-1 block">গড় ৳৬,১০০ / মাস</span>
+            <span className="text-2xl sm:text-3xl font-black text-slate-900 block">{formatPrice(48920, lang)}</span>
+            <span className="text-[11px] text-slate-400 mt-1 block">
+              {lang === 'bn' ? `গড় ${formatPrice(6100, lang)} / মাস` : `Avg ${formatPrice(6100, lang)} / mo`}
+            </span>
           </div>
 
           <div className="glass-card p-5 rounded-2xl border border-emerald-200 bg-emerald-50/50">
             <span className="text-xs text-emerald-800 font-semibold block mb-1">
               {lang === 'bn' ? 'সর্বমোট সাশ্রয়' : 'Lifetime Savings'}
             </span>
-            <span className="text-2xl sm:text-3xl font-black text-emerald-700 block">৳৪,১৮০</span>
+            <span className="text-2xl sm:text-3xl font-black text-emerald-700 block">{formatPrice(4180, lang)}</span>
             <span className="text-[11px] text-emerald-700 font-bold mt-1 block">🔥 সরাসরি বাল্ক ডিসকাউন্ট</span>
           </div>
 
@@ -75,7 +80,7 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
             <span className="text-xs text-amber-800 font-semibold block mb-1">
               {lang === 'bn' ? 'গড় সাশ্রয় হার' : 'Average Savings Rate'}
             </span>
-            <span className="text-2xl sm:text-3xl font-black text-amber-700 block">৮.৫%</span>
+            <span className="text-2xl sm:text-3xl font-black text-amber-700 block">{formatNumber(8.5, lang)}%</span>
             <span className="text-[11px] text-amber-800 font-bold mt-1 block">মার্কেট রিটেল প্রাইজ তুলনা</span>
           </div>
         </div>
@@ -103,10 +108,10 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
                   />
                 </div>
                 <span className="text-sm font-black text-emerald-700 block">
-                  +৳{m.saved}
+                  +{formatPrice(m.saved, lang)}
                 </span>
                 <span className="text-[10px] text-slate-400 block mt-0.5">
-                  বাজার: ৳{m.total.toLocaleString()}
+                  {lang === 'bn' ? `বাজার: ${formatPrice(m.total, lang)}` : `Market: ${formatPrice(m.total, lang)}`}
                 </span>
               </div>
             ))}
@@ -132,8 +137,10 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
                   {lang === 'bn' ? 'ব্যবহারযোগ্য কারেন্ট ক্রেডিট ব্যালেন্স' : 'Available Redeemable Balance'}
                 </span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-4xl font-black text-amber-950">৳১৫০</span>
-                  <span className="text-xs text-amber-800 font-bold">(১৫০ ক্রেডিট = ৳১৫০ নগদ মূল্য)</span>
+                  <span className="text-3xl sm:text-4xl font-black text-amber-950">{formatPrice(150, lang)}</span>
+                  <span className="text-xs text-amber-800 font-bold">
+                    {lang === 'bn' ? `(${toBengaliNumber(150)} ক্রেডিট = ${formatPrice(150, lang)} নগদ মূল্য)` : `(150 credits = ${formatPrice(150, lang)} value)`}
+                  </span>
                 </div>
               </div>
 
@@ -146,7 +153,7 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
 
             <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/80 flex items-center justify-between text-xs">
               <span className="font-semibold text-slate-700">লাইফটাইম অর্জিত ক্রেডিট:</span>
-              <span className="font-extrabold text-amber-900">৳৪৮০</span>
+              <span className="font-extrabold text-amber-900">{formatPrice(480, lang)}</span>
             </div>
           </div>
 
@@ -157,19 +164,21 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
                 <span className="text-xs font-extrabold uppercase tracking-wider bg-white/20 text-emerald-100 px-3 py-1 rounded-full backdrop-blur-sm">
                   {lang === 'bn' ? 'রেফারাল রিওয়ার্ড প্রোগ্রাম (Section 66)' : 'Viral Neighbor Referral'}
                 </span>
-                <span className="text-xs text-emerald-200">৩ জন সফল রেফার</span>
+                <span className="text-xs text-emerald-200">
+                  {lang === 'bn' ? `${toBengaliNumber(3)} জন সফল রেফার` : '3 Successful Referrals'}
+                </span>
               </div>
 
               <h4 className="text-lg sm:text-xl font-black leading-snug mb-2">
                 {lang === 'bn'
-                  ? 'প্রতিবেশী বা কলিগকে রেফার করলেই উভয়ের জন্য ৳১০০ ডিসকাউন্ট!'
-                  : 'Give ৳100, Get ৳100 for every Dhaka neighbor referred!'}
+                  ? `প্রতিবেশী বা কলিগকে রেফার করলেই উভয়ের জন্য ${formatPrice(100, lang)} ডিসকাউন্ট!`
+                  : `Give ${formatPrice(100, lang)}, Get ${formatPrice(100, lang)} for every Dhaka neighbor referred!`}
               </h4>
 
               <p className="text-xs text-emerald-100 leading-relaxed mb-6">
                 {lang === 'bn'
-                  ? 'আপনার রেফারেলে বন্ধু প্রথম মাসের বাজারে পাবেন ৳১০০ ডিসকাউন্ট, আর অর্ডার ডেলিভারি হতেই আপনার অ্যাকাউন্টে জমা হবে ৳১০০ ক্রেডিট।'
-                  : 'Your unique code gives friends ৳100 off their first monthly stock-up, and deposits ৳100 credits directly into your wallet upon delivery.'}
+                  ? `আপনার রেফারেলে বন্ধু প্রথম মাসের বাজারে পাবেন ${formatPrice(100, lang)} ডিসকাউন্ট, আর অর্ডার ডেলিভারি হতেই আপনার অ্যাকাউন্টে জমা হবে ${formatPrice(100, lang)} ক্রেডিট।`
+                  : `Your unique code gives friends ${formatPrice(100, lang)} off their first monthly stock-up, and deposits ${formatPrice(100, lang)} credits directly into your wallet upon delivery.`}
               </p>
             </div>
 
