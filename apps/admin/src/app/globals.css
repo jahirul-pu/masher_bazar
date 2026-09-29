@@ -8,6 +8,8 @@
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF, U+200C-200D, U+25CC;
+  size-adjust: 120%;
 }
 
 @font-face {
@@ -16,24 +18,14 @@
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0980-09FF, U+200C-200D, U+25CC;
+  size-adjust: 120%;
 }
 
 @layer base {
-  html {
-    font-size: 17px;
-  }
-
-  @media (min-width: 640px) {
-    html {
-      font-size: 18px;
-    }
-  }
-
   body {
     @apply bg-slate-900 text-slate-100 antialiased;
-    font-family: 'Sutonny OMJ', 'SutonnyOMJ', 'SutonnyMJ', sans-serif;
-    line-height: 1.6;
-    letter-spacing: 0.01em;
+    font-family: 'Sutonny OMJ', 'SutonnyOMJ', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   button,

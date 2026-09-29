@@ -8,16 +8,18 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Sutonny OMJ"', 'SutonnyOMJ', 'SutonnyMJ', 'sans-serif'],
-      },
-      fontSize: {
-        'xs': ['0.85rem', { lineHeight: '1.3rem' }],
-        'sm': ['0.95rem', { lineHeight: '1.45rem' }],
-        'base': ['1.05rem', { lineHeight: '1.65rem' }],
-        'lg': ['1.2rem', { lineHeight: '1.8rem' }],
-        'xl': ['1.35rem', { lineHeight: '1.95rem' }],
-        '2xl': ['1.65rem', { lineHeight: '2.25rem' }],
-        '3xl': ['2rem', { lineHeight: '2.5rem' }],
+        sans: [
+          '"Sutonny OMJ"',
+          'SutonnyOMJ',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+        ],
       },
       colors: {
         masik: {
