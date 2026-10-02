@@ -131,6 +131,17 @@ export const Hero: React.FC<HeroProps> = ({
               );
             })}
           </div>
+
+          {/* Quick Call to Action Link */}
+          <div className="mt-7 flex items-center justify-center gap-3">
+            <a
+              href="#catalog-section"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-masik-700 hover:bg-masik-800 text-white font-black text-xs sm:text-sm shadow-md shadow-masik-700/20 transition-all hover:scale-[1.02] active:scale-98"
+            >
+              <span>{lang === 'bn' ? '🛒 গ্রোসারি পণ্যসমূহ দেখুন' : '🛒 Browse All Groceries'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
         </div>
 
         {/* 3 Pillars Value Proposition Badges */}

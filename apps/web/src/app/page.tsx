@@ -8,10 +8,26 @@ import { BasketDisplay, DisplayBasketItem } from '@/components/BasketDisplay';
 import { SavingsDashboard } from '@/components/SavingsDashboard';
 import { MealPlanner } from '@/components/MealPlanner';
 import { B2bCorporateMess } from '@/components/B2bCorporateMess';
+import { ProductCatalog } from '@/components/ProductCatalog';
+import { CartDrawer } from '@/components/CartDrawer';
+import { FloatingCartBar } from '@/components/FloatingCartBar';
 import { Footer } from '@/components/Footer';
-import { Home, ChefHat, Building2 } from 'lucide-react';
+import {
+  ShoppingBag,
+  Store,
+  Package,
+  ChefHat,
+  Building2,
+  Award,
+  Sparkles,
+  ArrowRight,
+  TrendingDown,
+  ShieldCheck,
+  Truck,
+} from 'lucide-react';
 import { CookingFrequency, FoodPreference, MarketTier } from '@masik/shared-types';
 import { DEFAULT_INVENTORY_PRODUCTS, InventoryItem } from '@masik/business-rules';
+import { formatPrice, formatNumber } from '@/utils/formatters';
 
 export default function HomePage() {
   const [lang, setLang] = useState<'bn' | 'en'>('bn');
@@ -469,102 +485,350 @@ export default function HomePage() {
     if (basketEl) basketEl.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const [plannerMode, setPlannerMode] = useState<'household' | 'meal_planner' | 'mess_b2b'>('household');
+  const [storeView, setStoreView] = useState<'catalog' | 'bundles' | 'meal_planner' | 'mess_b2b' | 'savings'>('catalog');
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const [catalogSearch, setCatalogSearch] = useState('');
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
       <div>
-        {/* Navigation Bar */}
+        {/* Navigation Bar with Cart Button */}
         <Navbar
           lang={lang}
           onToggleLang={() => setLang((prev) => (prev === 'bn' ? 'en' : 'bn'))}
           basketCount={basketItems.length}
           totalSavings={totalSavings}
+          totalMasik={totalMasik}
+          onOpenCart={() => setIsCartDrawerOpen(true)}
         />
 
-        {/* Hero Section */}
+        {/* Hero Banner with Shortcuts & Presets */}
         <Hero
           lang={lang}
           selectedSize={onboarding.size}
-          onQuickAiPrompt={handleQuickAiPrompt}
+          onQuickAiPrompt={(prompt) => {
+            handleQuickAiPrompt(prompt);
+            setStoreView('catalog');
+          }}
           onSelectFamilyPreset={(size, budget) => {
             setOnboarding((prev) => ({ ...prev, size, budget }));
             handleGenerateFromOnboarding(size);
+            setStoreView('catalog');
           }}
         />
 
-        {/* Core Interactive Section */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12">
-          {/* Planner Mode Switcher Tabs */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
-            <span className="text-xs font-bold text-slate-500 px-3 uppercase tracking-wider">
-              {lang === 'bn' ? 'বাজার পরিকল্পনা মোড নির্বাচন করুন:' : 'Select Planning Mode:'}
-            </span>
-            <div className="flex flex-wrap gap-1.5 w-full sm:w-auto">
+        {/* Main Shopping Storefront Container */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
+          {/* E-Commerce Store Navigation Tabs */}
+          <div className="sticky top-20 z-30 bg-white/95 backdrop-blur-md p-2 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none pb-1 sm:pb-0">
               <button
-                onClick={() => setPlannerMode('household')}
-                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-                  plannerMode === 'household'
-                    ? 'bg-masik-700 text-white shadow-md'
-                    : 'text-slate-600 hover:bg-slate-100'
+                type="button"
+                onClick={() => setStoreView('catalog')}
+                className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                  storeView === 'catalog'
+                    ? 'bg-masik-700 text-white shadow-md shadow-masik-700/25 scale-[1.02]'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
-                <Home className="w-4 h-4" />
-                <span>{lang === 'bn' ? 'পারিবারিক অনবোর্ডিং' : 'Household Wizard'}</span>
+                <Store className="w-4 h-4" />
+                <span>{lang === 'bn' ? '🛍️ সব গ্রোসারি পণ্য' : '🛍️ All Groceries'}</span>
               </button>
 
               <button
-                onClick={() => setPlannerMode('meal_planner')}
-                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-                  plannerMode === 'meal_planner'
-                    ? 'bg-emerald-600 text-white shadow-md'
-                    : 'text-slate-600 hover:bg-slate-100'
+                type="button"
+                onClick={() => setStoreView('bundles')}
+                className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                  storeView === 'bundles'
+                    ? 'bg-masik-700 text-white shadow-md shadow-masik-700/25 scale-[1.02]'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                <Package className="w-4 h-4" />
+                <span>{lang === 'bn' ? '📦 ১-ক্লিক ফ্যামিলি বান্ডেল' : '📦 1-Click Family Bundles'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setStoreView('meal_planner')}
+                className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                  storeView === 'meal_planner'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/25 scale-[1.02]'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
                 <ChefHat className="w-4 h-4" />
-                <span>{lang === 'bn' ? 'AI মিল প্ল্যানার (Section 67)' : 'AI Meal-to-Market'}</span>
+                <span>{lang === 'bn' ? '🍳 AI মিল প্ল্যানার' : '🍳 AI Meal-to-Market'}</span>
               </button>
 
               <button
-                onClick={() => setPlannerMode('mess_b2b')}
-                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-                  plannerMode === 'mess_b2b'
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-600 hover:bg-slate-100'
+                type="button"
+                onClick={() => setStoreView('mess_b2b')}
+                className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                  storeView === 'mess_b2b'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25 scale-[1.02]'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
                 <Building2 className="w-4 h-4" />
-                <span>{lang === 'bn' ? 'মেস ও করপোরেট (B2B)' : 'Mess & B2B Corporate'}</span>
+                <span>{lang === 'bn' ? '🏢 মেস ও করপোরেট' : '🏢 Mess & Corporate B2B'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setStoreView('savings')}
+                className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                  storeView === 'savings'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/25 scale-[1.02]'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                <Award className="w-4 h-4" />
+                <span>{lang === 'bn' ? '🎁 সেভিংস ও রিওয়ার্ড' : '🎁 Savings & Rewards'}</span>
               </button>
             </div>
+
+            {/* Jump to Cart Pill */}
+            <button
+              type="button"
+              onClick={() => setIsCartDrawerOpen(true)}
+              className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-masik-50 text-masik-900 hover:bg-masik-100 text-xs font-black border border-masik-200 transition-all cursor-pointer shrink-0"
+            >
+              <ShoppingBag className="w-4 h-4 text-masik-700" />
+              <span>
+                {lang === 'bn' ? 'ঝুড়ি দেখুন' : 'View Cart'} ({formatNumber(basketItems.length, lang)})
+              </span>
+            </button>
           </div>
 
-          {/* Active Mode Component */}
-          {plannerMode === 'household' && (
-            <OnboardingWizard
-              lang={lang}
-              state={onboarding}
-              onChange={(updates) => setOnboarding((prev) => ({ ...prev, ...updates }))}
-              onGenerate={handleGenerateFromOnboarding}
-            />
+          {/* Active Shopping Section Content */}
+          {storeView === 'catalog' && (
+            <div className="space-y-12">
+              {/* Product Catalog Grid */}
+              <section id="catalog-section" className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900">
+                      {lang === 'bn' ? 'মাসের বাজার পণ্য ও ক্যাটালগ' : 'Monthly Grocery Storefront'}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-slate-500">
+                      {lang === 'bn'
+                        ? 'সরাসরি প্রস্তুতকারক ও মিল থেকে পাইকারি মূল্যে চাল, ডাল, তেল ও নিত্যপ্রয়োজনীয় পণ্য।'
+                        : 'Authentic staples at wholesale rates direct from mills and FMCG distributors.'}
+                    </p>
+                  </div>
+
+                  <span className="text-xs text-masik-700 font-bold bg-masik-50 border border-masik-200 px-3 py-1.5 rounded-xl self-start sm:self-auto">
+                    ✓ {lang === 'bn' ? 'টুইন প্রাইস: পাইকারি সাশ্রয় নিশ্চিত' : 'Twin-Price: Guaranteed Wholesale Savings'}
+                  </span>
+                </div>
+
+                <ProductCatalog
+                  lang={lang}
+                  catalog={inventoryCatalog}
+                  basketItems={basketItems}
+                  onAddItem={handleAddItem}
+                  onUpdateQty={handleUpdateQty}
+                  searchQuery={catalogSearch}
+                  onSearchChange={setCatalogSearch}
+                />
+              </section>
+
+              {/* 1-Click Monthly Supply Feature Callout Banner */}
+              <div className="bg-gradient-to-r from-masik-900 via-masik-800 to-emerald-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-masik-700">
+                <div>
+                  <span className="text-xs font-black tracking-wider uppercase text-emerald-300 block mb-1">
+                    {lang === 'bn' ? 'স্মার্ট মাসিক সেবা' : 'Smart Household Provisioning'}
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black mb-2">
+                    {lang === 'bn'
+                      ? 'এক ক্লিকে পুরো মাসের বাজার প্রস্তুত করতে চান?'
+                      : 'Need your entire monthly grocery prepared in 1 click?'}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-emerald-100 max-w-xl leading-relaxed">
+                    {lang === 'bn'
+                      ? 'আপনার পরিবারের লোকসংখ্যা ও রান্নার অভ্যাস জানালেই আমাদের সিস্টেম স্বয়ংক্রিয়ভাবে চাল, ডাল, তেলসহ ১২টি অত্যাবশ্যকীয় ক্যাটাগরি হিসাব করে ঝুড়ি সাজিয়ে দেয়।'
+                      : 'Select your family size and preferences — our business engine calculates a calibrated 30-day supply of all 12 core pantry staples.'}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setStoreView('bundles')}
+                    className="px-5 py-3 rounded-2xl bg-white text-masik-950 font-black text-xs sm:text-sm hover:bg-emerald-50 transition-all shadow-md cursor-pointer"
+                  >
+                    {lang === 'bn' ? 'পারিবারিক বান্ডেল তৈরি করুন' : 'Configure Family Pack'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStoreView('meal_planner')}
+                    className="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md cursor-pointer"
+                  >
+                    {lang === 'bn' ? 'AI মিল প্ল্যানার দেখুন' : 'Try AI Meal Planner'}
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
 
-          {plannerMode === 'meal_planner' && (
-            <MealPlanner
-              lang={lang}
-              onGenerateFromMealPlan={handleGenerateFromMealPlan}
-            />
+          {storeView === 'bundles' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200">
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">
+                    {lang === 'bn' ? 'পারিবারিক মাসিক বাজার বান্ডেল কনফিগারেটর' : 'Household Monthly Bundle Configurator'}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    {lang === 'bn'
+                      ? 'পরিবারের সদস্য সংখ্যা ও খাবারের পছন্দ অনুযায়ী এক ক্লিকে সম্পূর্ণ মাসের বাজার তৈরি করুন।'
+                      : 'Calibrate customized staples tailored to your household size and eating habits.'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setStoreView('catalog')}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+                >
+                  ← {lang === 'bn' ? 'ক্যাটালগে ফিরে যান' : 'Back to Catalog'}
+                </button>
+              </div>
+
+              <OnboardingWizard
+                lang={lang}
+                state={onboarding}
+                onChange={(updates) => setOnboarding((prev) => ({ ...prev, ...updates }))}
+                onGenerate={() => {
+                  handleGenerateFromOnboarding(onboarding.size);
+                  setStoreView('catalog');
+                  const basketEl = document.getElementById('basket-section');
+                  if (basketEl) basketEl.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+            </div>
           )}
 
-          {plannerMode === 'mess_b2b' && (
-            <B2bCorporateMess
-              lang={lang}
-              onApplyMessBasket={handleApplyMessBasket}
-            />
+          {storeView === 'meal_planner' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200">
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">
+                    {lang === 'bn' ? 'AI মিল প্ল্যানার থেকে সরাসরি বাজার' : 'AI Weekly Meal-to-Market Converter'}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    {lang === 'bn'
+                      ? 'সাপ্তাহিক খাবারের মেনু নির্ধারণ করুন — সিস্টেম স্বয়ংক্রিয়ভাবে চাল, তেল, ডাল ও আটার পরিমাণ গণনা করবে।'
+                      : 'Plan your weekly household meals and let our AI calculate raw staple quantities.'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setStoreView('catalog')}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+                >
+                  ← {lang === 'bn' ? 'ক্যাটালগে ফিরে যান' : 'Back to Catalog'}
+                </button>
+              </div>
+
+              <MealPlanner
+                lang={lang}
+                onGenerateFromMealPlan={(needs) => {
+                  handleGenerateFromMealPlan(needs);
+                  setStoreView('catalog');
+                  const basketEl = document.getElementById('basket-section');
+                  if (basketEl) basketEl.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+            </div>
           )}
 
-          {/* Basket Display with Budget Optimization, Missing Item Alert & Checkout */}
-          <div id="basket-section">
+          {storeView === 'mess_b2b' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200">
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">
+                    {lang === 'bn' ? 'ব্যাচেলর মেস ও করপোরেট অফিস প্যান্ট্রি বাজার' : 'Bachelor Mess & Corporate Office Pantry'}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    {lang === 'bn'
+                      ? '৫০ কেজি বস্তা চাল ও ১৬ লিটার তেলে মেস খরচ ভাগাভাগি এবং অফিস প্যান্ট্রির জন্য মুশক-৬.৩ ভ্যাট চালান।'
+                      : 'Bulk quota split for Dhaka bachelor flats and Net-30 credit corporate supply.'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setStoreView('catalog')}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+                >
+                  ← {lang === 'bn' ? 'ক্যাটালগে ফিরে যান' : 'Back to Catalog'}
+                </button>
+              </div>
+
+              <B2bCorporateMess
+                lang={lang}
+                onApplyMessBasket={(items) => {
+                  handleApplyMessBasket(items);
+                  setStoreView('catalog');
+                  const basketEl = document.getElementById('basket-section');
+                  if (basketEl) basketEl.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+            </div>
+          )}
+
+          {storeView === 'savings' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200">
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">
+                    {lang === 'bn' ? 'সেভিংস ড্যাশবোর্ড ও রেফারাল রিওয়ার্ড' : 'Savings Intelligence & Referral Wallet'}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    {lang === 'bn'
+                      ? 'আপনার অর্জিত লাইফটাইম সাশ্রয়, ওয়ালেট ক্যাশব্যাক ক্রেডিট এবং প্রতিবেশী রেফারাল বোনাস।'
+                      : 'Track cumulative savings, wallet cashback credits, and neighbor referral rewards.'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setStoreView('catalog')}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+                >
+                  ← {lang === 'bn' ? 'ক্যাটালগে ফিরে যান' : 'Back to Catalog'}
+                </button>
+              </div>
+
+              <SavingsDashboard
+                lang={lang}
+                onRepeatLastMarket={handleRepeatLastMarket}
+              />
+            </div>
+          )}
+
+          {/* Basket Review & Checkout Section */}
+          <div id="basket-section" className="pt-8 border-t border-slate-200/80">
+            <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
+                  <ShoppingBag className="w-6 h-6 text-masik-700" />
+                  <span>{lang === 'bn' ? 'আপনার বর্তমান বাজার ঝুড়ি ও অর্ডার চেকআউট' : 'Your Basket & Checkout'}</span>
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                  {lang === 'bn'
+                    ? 'প্রয়োজনে পরিমাণ পরিবর্তন করুন, বাজেট অপটিমাইজ করুন এবং ঢাকার ঠিকানায় অর্ডার প্লেস করুন।'
+                    : 'Adjust items, optimize budget, and place your order with free delivery.'}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setStoreView('catalog')}
+                className="self-start sm:self-auto px-4 py-2 rounded-xl bg-masik-50 text-masik-800 hover:bg-masik-100 text-xs font-bold border border-masik-200 transition-all cursor-pointer"
+              >
+                + {lang === 'bn' ? 'আরও পণ্য যোগ করুন' : 'Add More Products'}
+              </button>
+            </div>
+
             <BasketDisplay
               lang={lang}
               items={basketItems}
@@ -580,13 +844,40 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Lifetime Savings Intelligence & Repeat Market Dashboard */}
-          <SavingsDashboard
-            lang={lang}
-            onRepeatLastMarket={handleRepeatLastMarket}
-          />
+          {/* Savings Intelligence Summary (always visible at bottom) */}
+          {storeView !== 'savings' && (
+            <SavingsDashboard
+              lang={lang}
+              onRepeatLastMarket={handleRepeatLastMarket}
+            />
+          )}
         </main>
       </div>
+
+      {/* Slide-Over Cart Drawer */}
+      <CartDrawer
+        isOpen={isCartDrawerOpen}
+        onClose={() => setIsCartDrawerOpen(false)}
+        lang={lang}
+        items={basketItems}
+        onUpdateQty={handleUpdateQty}
+        onRemoveItem={handleRemoveItem}
+        onOptimizeBudget={handleOptimizeBudget}
+        isBudgetOptimized={isBudgetOptimized}
+        swappedCount={swappedCount}
+        onProceedToCheckout={() => {
+          document.getElementById('basket-section')?.scrollIntoView({ behavior: 'smooth' });
+        }}
+      />
+
+      {/* Floating Bottom Cart Bar */}
+      <FloatingCartBar
+        lang={lang}
+        itemCount={basketItems.length}
+        totalMasik={totalMasik}
+        totalSavings={totalSavings}
+        onOpenCart={() => setIsCartDrawerOpen(true)}
+      />
 
       {/* Footer */}
       <Footer lang={lang} />
