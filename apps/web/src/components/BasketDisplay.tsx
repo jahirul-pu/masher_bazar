@@ -219,10 +219,107 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
     (i) => i.nameBn.includes('ডিটারজেন্ট') || i.nameEn.toLowerCase().includes('detergent') || i.category.includes('পরিচ্ছন্নতা')
   );
   const hasDal = items.some(
-    (i) => i.nameBn.includes('ডাল') || i.nameEn.toLowerCase().includes('dal')
+    (i) => i.nameBn.includes('ডাল') || i.nameEn.toLowerCase().includes('dal') || i.category.includes('ডাল')
+  );
+  const hasOil = items.some(
+    (i) => i.nameBn.includes('তেল') || i.nameEn.toLowerCase().includes('oil') || i.category.includes('তেল')
+  );
+  const hasSalt = items.some(
+    (i) => i.nameBn.includes('লবণ') || i.nameEn.toLowerCase().includes('salt') || i.category.includes('লবণ')
   );
 
+  const missingStapleAlert = !hasDetergent
+    ? {
+        icon: '🧺',
+        titleBn: 'স্মার্ট রিমাইন্ডার (Section 69): লন্ড্রি ডিটারজেন্ট যোগ করা হয়নি',
+        titleEn: 'Missing Staple Reminder: No Laundry Detergent',
+        descBn: 'সাধারণত প্রতি মাসে আপনার পরিবারে ২ কেজি ডিটারজেন্ট প্রয়োজন হয়।',
+        descEn: 'Dhaka households typically require 2kg detergent per monthly cycle.',
+        item: {
+          variantId: 'v-det-wheel-2k',
+          nameEn: 'Wheel 2in1 Washing Powder',
+          nameBn: 'হুইল ডিটারজেন্ট পাউডার ২ কেজি',
+          category: 'পরিচ্ছন্নতা',
+          unit: 'KG',
+          unitValue: 2,
+          quantity: 1,
+          unitMasikPrice: 330,
+          unitMrp: 360,
+          isRecurring: true,
+        },
+        buttonTextBn: `+ হুইল ডিটারজেন্ট যোগ করুন (${formatPrice(330, lang)})`,
+        buttonTextEn: `+ Add Detergent (${formatPrice(330, lang)})`,
+      }
+    : !hasDal
+    ? {
+        icon: '🥣',
+        titleBn: 'স্মার্ট রিমাইন্ডার (Section 69): ডাল যোগ করা হয়নি',
+        titleEn: 'Missing Staple Reminder: No Lentils / Dal',
+        descBn: 'সাধারণত প্রতি মাসে আপনার পরিবারে ২-৪ কেজি মসুর ডাল প্রয়োজন হয়।',
+        descEn: 'Dhaka households typically require 2-4kg lentils per monthly cycle.',
+        item: {
+          variantId: 'v-dal-aci-2k',
+          nameEn: 'ACI Pure Desi Masoor Dal',
+          nameBn: 'এসিআই পিওর দেশি মসুর ডাল',
+          category: 'ডাল',
+          unit: 'KG',
+          unitValue: 2,
+          quantity: 2,
+          unitMasikPrice: 310,
+          unitMrp: 340,
+          isRecurring: true,
+        },
+        buttonTextBn: `+ মসুর ডাল যোগ করুন (${formatPrice(310, lang)})`,
+        buttonTextEn: `+ Add Masoor Dal (${formatPrice(310, lang)})`,
+      }
+    : !hasOil
+    ? {
+        icon: '🛢️',
+        titleBn: 'স্মার্ট রিমাইন্ডার (Section 69): ভোজ্য তেল যোগ করা হয়নি',
+        titleEn: 'Missing Staple Reminder: No Cooking Oil',
+        descBn: 'সাধারণত প্রতি মাসে আপনার পরিবারে ৫ লিটার ভোজ্য তেল প্রয়োজন হয়।',
+        descEn: 'Dhaka households typically require 5L cooking oil per monthly cycle.',
+        item: {
+          variantId: 'v-oil-rup-5l',
+          nameEn: 'Rupchanda Fortified Soybean Oil',
+          nameBn: 'রূপচাঁদা ভোজ্য সয়াবিন তেল',
+          category: 'তেল',
+          unit: 'LITER',
+          unitValue: 5,
+          quantity: 1,
+          unitMasikPrice: 815,
+          unitMrp: 860,
+          isRecurring: true,
+        },
+        buttonTextBn: `+ সয়াবিন তেল যোগ করুন (${formatPrice(815, lang)})`,
+        buttonTextEn: `+ Add Soybean Oil (${formatPrice(815, lang)})`,
+      }
+    : !hasSalt
+    ? {
+        icon: '🧂',
+        titleBn: 'স্মার্ট রিমাইন্ডার (Section 69): লবণ যোগ করা হয়নি',
+        titleEn: 'Missing Staple Reminder: No Cooking Salt',
+        descBn: 'সাধারণত প্রতি মাসে আপনার পরিবারে ১-২ কেজি আয়োডিনযুক্ত লবণ প্রয়োজন হয়।',
+        descEn: 'Dhaka households typically require 1-2kg cooking salt per monthly cycle.',
+        item: {
+          variantId: 'v-salt-aci-1k',
+          nameEn: 'ACI Pure Vacuum Salt',
+          nameBn: 'এসিআই পিওর ভ্যাকিউম লবণ',
+          category: 'লবণ',
+          unit: 'KG',
+          unitValue: 1,
+          quantity: 2,
+          unitMasikPrice: 38,
+          unitMrp: 42,
+          isRecurring: true,
+        },
+        buttonTextBn: `+ ভ্যাকুয়াম লবণ যোগ করুন (${formatPrice(38, lang)})`,
+        buttonTextEn: `+ Add Vacuum Salt (${formatPrice(38, lang)})`,
+      }
+    : null;
+
   const handleCheckout = () => {
+    if (items.length === 0) return;
     const randomOrderNumber = `MB-2026-${Math.floor(10000 + Math.random() * 90000)}`;
     setOrderConfirmed(randomOrderNumber);
   };
@@ -313,48 +410,57 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
           </div>
 
           {/* Missing Staple Alert Banner (Section 69 PRD) */}
-          {!hasDetergent && (
+          {missingStapleAlert && (
             <div className="mb-4 bg-amber-50/90 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm animate-pulse-slow">
               <div className="flex items-center gap-2.5">
-                <span className="text-xl">🧺</span>
+                <span className="text-xl">{missingStapleAlert.icon}</span>
                 <div>
                   <h5 className="text-xs font-bold text-amber-950">
-                    {lang === 'bn' ? 'স্মার্ট রিমাইন্ডার (Section 69): লন্ড্রি ডিটারজেন্ট যোগ করা হয়নি' : 'Missing Staple Reminder: No Laundry Detergent'}
+                    {lang === 'bn' ? missingStapleAlert.titleBn : missingStapleAlert.titleEn}
                   </h5>
                   <p className="text-[11px] text-amber-800">
-                    {lang === 'bn'
-                      ? 'সাধারণত প্রতি মাসে আপনার পরিবারে ২ কেজি ডিটারজেন্ট প্রয়োজন হয়।'
-                      : 'Dhaka households typically require 2kg detergent per monthly cycle.'}
+                    {lang === 'bn' ? missingStapleAlert.descBn : missingStapleAlert.descEn}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => {
                   if (onAddItem) {
-                    onAddItem({
-                      variantId: 'v-det-wheel-2k',
-                      nameEn: 'Wheel 2in1 Washing Powder',
-                      nameBn: 'হুইল ডিটারজেন্ট পাউডার ২ কেজি',
-                      category: 'পরিচ্ছন্নতা',
-                      unit: 'KG',
-                      unitValue: 2,
-                      quantity: 1,
-                      unitMasikPrice: 330,
-                      unitMrp: 360,
-                      isRecurring: true,
-                    });
+                    onAddItem(missingStapleAlert.item);
                   }
                 }}
                 className="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-sm shrink-0 transition-all"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>{lang === 'bn' ? `+ হুইল ডিটারজেন্ট যোগ করুন (${formatPrice(330, lang)})` : `+ Add Detergent (${formatPrice(330, lang)})`}</span>
+                <span>{lang === 'bn' ? missingStapleAlert.buttonTextBn : missingStapleAlert.buttonTextEn}</span>
               </button>
             </div>
           )}
 
-          {/* Product Items Table / Grid */}
-          <div className="divide-y divide-slate-100">
+          {/* Product Items Table / Grid or Empty State */}
+          {items.length === 0 ? (
+            <div className="py-12 text-center text-slate-500">
+              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3 text-slate-400">
+                <ShoppingBag className="w-8 h-8" />
+              </div>
+              <h4 className="text-base font-bold text-slate-800 mb-1">
+                {lang === 'bn' ? 'আপনার বাজার ঝুড়ি খালি' : 'Your Basket is Empty'}
+              </h4>
+              <p className="text-xs text-slate-500 mb-4 max-w-sm mx-auto">
+                {lang === 'bn'
+                  ? 'ইনভেন্টরি ক্যাটালগ থেকে নতুন পণ্য যোগ করুন অথবা বাজার তৈরি করুন।'
+                  : 'Add products from the inventory catalog or generate a calibrated household basket.'}
+              </p>
+              <button
+                type="button"
+                onClick={handleOpenAddCatalog}
+                className="px-4 py-2 bg-masik-700 hover:bg-masik-800 text-white font-bold text-xs rounded-xl shadow-sm transition-all"
+              >
+                {lang === 'bn' ? '+ ক্যাটালগ থেকে পণ্য যোগ করুন' : '+ Browse Inventory Catalog'}
+              </button>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
             {items.map((item) => {
               const lineTotal = item.unitMasikPrice * item.quantity;
               const lineMarket = item.unitMrp * item.quantity;
@@ -449,6 +555,7 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
               );
             })}
           </div>
+        )}
 
           {/* Add More Products from Background Inventory Catalog */}
           <div className="pt-5 mt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -676,7 +783,12 @@ export const BasketDisplay: React.FC<BasketDisplayProps> = ({
           {/* Primary Checkout Button */}
           <button
             onClick={handleCheckout}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-masik-700 via-masik-600 to-emerald-600 hover:from-masik-800 hover:to-emerald-700 text-white font-black text-base flex items-center justify-center gap-2 shadow-xl shadow-masik-700/30 transition-all active:scale-[0.99]"
+            disabled={items.length === 0}
+            className={`w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2 shadow-xl transition-all ${
+              items.length === 0
+                ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none'
+                : 'bg-gradient-to-r from-masik-700 via-masik-600 to-emerald-600 hover:from-masik-800 hover:to-emerald-700 text-white shadow-masik-700/30 active:scale-[0.99]'
+            }`}
           >
             <span>{lang === 'bn' ? 'অর্ডার কনফার্ম করুন' : 'Confirm Monthly Market'}</span>
             <ArrowRight className="w-5 h-5" />

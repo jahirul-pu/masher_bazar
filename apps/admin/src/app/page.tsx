@@ -29,6 +29,13 @@ export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<'wms' | 'inventory' | 'procurement' | 'subscriptions'>('wms');
   const [waveGenerated, setWaveGenerated] = useState(false);
   const [alertDismissed, setAlertDismissed] = useState(false);
+  const [issuedPOs, setIssuedPOs] = useState<string[]>([]);
+
+  const handleIssuePO = (poId: string, supplier: string) => {
+    setIssuedPOs((prev) => (prev.includes(poId) ? prev : [...prev, poId]));
+    setNotification(`Purchase Order ${poId} successfully dispatched to ${supplier} via EDI`);
+    setTimeout(() => setNotification(null), 3500);
+  };
 
   // Background Inventory Management State
   const [inventoryList, setInventoryList] = useState<InventoryItem[]>(DEFAULT_INVENTORY_PRODUCTS);
@@ -62,10 +69,11 @@ export default function AdminDashboardPage() {
       if (stored) {
         const parsed: InventoryItem[] = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge avoiding duplicate IDs
-          const existingIds = new Set(DEFAULT_INVENTORY_PRODUCTS.map((i) => i.id));
-          const customOnly = parsed.filter((p) => !existingIds.has(p.id));
-          setInventoryList([...DEFAULT_INVENTORY_PRODUCTS, ...customOnly]);
+          const storedMap = new Map(parsed.map((p) => [p.id, p]));
+          const merged = DEFAULT_INVENTORY_PRODUCTS.map((item) => storedMap.get(item.id) || item);
+          const defaultIds = new Set(DEFAULT_INVENTORY_PRODUCTS.map((i) => i.id));
+          const customOnly = parsed.filter((p) => !defaultIds.has(p.id));
+          setInventoryList([...merged, ...customOnly]);
         }
       }
     } catch {
@@ -111,7 +119,8 @@ export default function AdminDashboardPage() {
       localStorage.setItem('masik_inventory_catalog', JSON.stringify(updated));
       window.dispatchEvent(new Event('inventory_updated'));
       // Attempt backend persistence
-      fetch('http://localhost:4000/api/products', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      fetch(`${apiUrl}/api/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(createdItem),
@@ -323,7 +332,11 @@ export default function AdminDashboardPage() {
                       : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/30'
                   }`}
                 >
-                  <RefreshCw className={`w-4 h-4 ${waveGenerated ? '' : 'animate-spin'}`} />
+                  {waveGenerated ? (
+                    <CheckCircle className="w-4 h-4 text-emerald-400" />
+                  ) : (
+                    <RefreshCw className="w-4 h-4" />
+                  )}
                   <span>{waveGenerated ? '✓ Wave #WAVE-10042 Generated' : 'Generate Wave Batch (100 Orders)'}</span>
                 </button>
               </div>
@@ -400,7 +413,9 @@ export default function AdminDashboardPage() {
               <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800">
                 <span className="text-[11px] text-slate-400 font-medium block">Total Catalog SKUs</span>
                 <span className="text-2xl font-black text-white mt-1 block">{inventoryList.length}</span>
-                <span className="text-[10px] text-teal-400 font-bold block mt-1">Across 8 FMCG Categories</span>
+                <span className="text-[10px] text-teal-400 font-bold block mt-1">
+                  Across {new Set(inventoryList.map((i) => i.category)).size} FMCG Categories
+                </span>
               </div>
               <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800">
                 <span className="text-[11px] text-slate-400 font-medium block">Physical Warehouse Stock</span>
@@ -910,8 +925,18 @@ export default function AdminDashboardPage() {
                       <span className="font-bold text-emerald-400">৳৬,২১,৬০০</span>
                     </div>
                   </div>
-                  <button className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all">
-                    Issue Purchase Order #PO-2609-01
+                  <button
+                    onClick={() => handleIssuePO('#PO-2609-01', 'City Group (Teer)')}
+                    disabled={issuedPOs.includes('#PO-2609-01')}
+                    className={`w-full py-2 rounded-xl text-xs font-bold transition-all ${
+                      issuedPOs.includes('#PO-2609-01')
+                        ? 'bg-slate-800 text-emerald-400 border border-emerald-800/60'
+                        : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+                    }`}
+                  >
+                    {issuedPOs.includes('#PO-2609-01')
+                      ? '✓ PO Dispatched (#PO-2609-01)'
+                      : 'Issue Purchase Order #PO-2609-01'}
                   </button>
                 </div>
 
@@ -935,8 +960,18 @@ export default function AdminDashboardPage() {
                       <span className="font-bold text-emerald-400">৳১৩,৪৬,৮০০</span>
                     </div>
                   </div>
-                  <button className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all">
-                    Issue Purchase Order #PO-2609-02
+                  <button
+                    onClick={() => handleIssuePO('#PO-2609-02', 'Square Consumer Products (Chashi)')}
+                    disabled={issuedPOs.includes('#PO-2609-02')}
+                    className={`w-full py-2 rounded-xl text-xs font-bold transition-all ${
+                      issuedPOs.includes('#PO-2609-02')
+                        ? 'bg-slate-800 text-emerald-400 border border-emerald-800/60'
+                        : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+                    }`}
+                  >
+                    {issuedPOs.includes('#PO-2609-02')
+                      ? '✓ PO Dispatched (#PO-2609-02)'
+                      : 'Issue Purchase Order #PO-2609-02'}
                   </button>
                 </div>
               </div>

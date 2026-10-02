@@ -145,8 +145,13 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
   };
 
   const handleCopyMessWhatsapp = () => {
-    const text = `📢 মাসের বাজার মেস হিসাব (মেম্বার: ${formatNumber(messMembers, lang)} জন)\nমোট বাজার: ${formatPrice(totalMessCost, lang)}\nজনপ্রতি খরচ: ${formatPrice(perMemberCost, lang)}\nচাল: ${formatNumber(messRiceKg, lang)}kg, তেল: ${formatNumber(messOilLiters, lang)}L, ডাল: ${formatNumber(messDalKg, lang)}kg, আলু: ${formatNumber(messPotatoKg, lang)}kg\nঅর্ডার করতে ভিজিট করুন: https://masherbazar.com`;
-    navigator.clipboard.writeText(text);
+    const text =
+      lang === 'bn'
+        ? `📢 মাসের বাজার মেস হিসাব (মেম্বার: ${formatNumber(messMembers, lang)} জন)\nমোট বাজার: ${formatPrice(totalMessCost, lang)}\nজনপ্রতি খরচ: ${formatPrice(perMemberCost, lang)}\nচাল: ${formatNumber(messRiceKg, lang)}kg, তেল: ${formatNumber(messOilLiters, lang)}L, ডাল: ${formatNumber(messDalKg, lang)}kg, আলু: ${formatNumber(messPotatoKg, lang)}kg\nঅর্ডার করতে ভিজিট করুন: https://masherbazar.com`
+        : `📢 Masher Bazar Mess Split (Members: ${formatNumber(messMembers, lang)})\nTotal Monthly Grocery: ${formatPrice(totalMessCost, lang)}\nPer Member: ${formatPrice(perMemberCost, lang)}\nRice: ${formatNumber(messRiceKg, lang)}kg, Oil: ${formatNumber(messOilLiters, lang)}L, Dal: ${formatNumber(messDalKg, lang)}kg, Potato: ${formatNumber(messPotatoKg, lang)}kg\nOrder online: https://masherbazar.com`;
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
     setMessCopied(true);
     setTimeout(() => setMessCopied(false), 3000);
   };
@@ -207,7 +212,9 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
             </div>
 
             <div className="flex items-center gap-3">
-              <label className="text-xs font-bold text-indigo-900">মেস মেম্বার:</label>
+              <label className="text-xs font-bold text-indigo-900">
+                {lang === 'bn' ? 'মেস মেম্বার:' : 'Mess Members:'}
+              </label>
               <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-xl border border-indigo-200">
                 {[3, 4, 5, 6, 8, 10].map((num) => (
                   <button
@@ -227,32 +234,52 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
           {/* Bulk Quotas Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
-              <span className="text-xs font-semibold text-slate-500 block mb-1">মিনিকেট চাল</span>
-              <span className="text-xl font-black text-slate-800 block">{formatNumber(messRiceKg, lang)} কেজি</span>
+              <span className="text-xs font-semibold text-slate-500 block mb-1">
+                {lang === 'bn' ? 'মিনিকেট চাল' : 'Miniket Rice'}
+              </span>
+              <span className="text-xl font-black text-slate-800 block">
+                {formatNumber(messRiceKg, lang)} {lang === 'bn' ? 'কেজি' : 'kg'}
+              </span>
               <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messRiceCost, lang)}</span>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
-              <span className="text-xs font-semibold text-slate-500 block mb-1">সয়াবিন ভোজ্য তেল</span>
-              <span className="text-xl font-black text-slate-800 block">{formatNumber(messOilLiters, lang)} লিটার</span>
+              <span className="text-xs font-semibold text-slate-500 block mb-1">
+                {lang === 'bn' ? 'সয়াবিন ভোজ্য তেল' : 'Soybean Cooking Oil'}
+              </span>
+              <span className="text-xl font-black text-slate-800 block">
+                {formatNumber(messOilLiters, lang)} {lang === 'bn' ? 'লিটার' : 'Liters'}
+              </span>
               <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messOilCost, lang)}</span>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
-              <span className="text-xs font-semibold text-slate-500 block mb-1">দেশি মসুর ডাল</span>
-              <span className="text-xl font-black text-slate-800 block">{formatNumber(messDalKg, lang)} কেজি</span>
+              <span className="text-xs font-semibold text-slate-500 block mb-1">
+                {lang === 'bn' ? 'দেশি মসুর ডাল' : 'Desi Masoor Dal'}
+              </span>
+              <span className="text-xl font-black text-slate-800 block">
+                {formatNumber(messDalKg, lang)} {lang === 'bn' ? 'কেজি' : 'kg'}
+              </span>
               <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messDalCost, lang)}</span>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
-              <span className="text-xs font-semibold text-slate-500 block mb-1">মুন্সীগঞ্জ আলু</span>
-              <span className="text-xl font-black text-slate-800 block">{formatNumber(messPotatoKg, lang)} কেজি</span>
+              <span className="text-xs font-semibold text-slate-500 block mb-1">
+                {lang === 'bn' ? 'মুন্সীগঞ্জ আলু' : 'Munshiganj Potato'}
+              </span>
+              <span className="text-xl font-black text-slate-800 block">
+                {formatNumber(messPotatoKg, lang)} {lang === 'bn' ? 'কেজি' : 'kg'}
+              </span>
               <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messPotatoCost, lang)}</span>
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 text-center shadow-sm">
-              <span className="text-xs font-semibold text-slate-500 block mb-1">পাবনার দেশি পেঁয়াজ</span>
-              <span className="text-xl font-black text-slate-800 block">{formatNumber(messOnionKg, lang)} কেজি</span>
+              <span className="text-xs font-semibold text-slate-500 block mb-1">
+                {lang === 'bn' ? 'পাবনার দেশি পেঁয়াজ' : 'Pabna Desi Onion'}
+              </span>
+              <span className="text-xl font-black text-slate-800 block">
+                {formatNumber(messOnionKg, lang)} {lang === 'bn' ? 'কেজি' : 'kg'}
+              </span>
               <span className="text-xs font-bold text-emerald-600 block mt-1">{formatPrice(messOnionCost, lang)}</span>
             </div>
           </div>
@@ -261,14 +288,18 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
           <div className="bg-gradient-to-r from-indigo-700 via-indigo-800 to-slate-900 rounded-3xl p-6 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <span className="text-xs text-indigo-200 uppercase tracking-wider font-semibold block mb-1">
-                {formatNumber(messMembers, lang)} জন সদস্যের মেস হিসাব
+                {lang === 'bn'
+                  ? `${formatNumber(messMembers, lang)} জন সদস্যের মেস হিসাব`
+                  : `Mess bill for ${formatNumber(messMembers, lang)} members`}
               </span>
               <div className="flex items-baseline gap-3">
                 <span className="text-3xl font-black">{formatPrice(totalMessCost, lang)}</span>
-                <span className="text-xs text-indigo-200">মোট মাসের বাজার</span>
+                <span className="text-xs text-indigo-200">
+                  {lang === 'bn' ? 'মোট মাসের বাজার' : 'Total Monthly Grocery'}
+                </span>
               </div>
               <div className="mt-2 inline-flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl backdrop-blur-sm">
-                <span className="text-xs text-indigo-100">জনপ্রতি খরচ:</span>
+                <span className="text-xs text-indigo-100">{lang === 'bn' ? 'জনপ্রতি খরচ:' : 'Per Member:'}</span>
                 <span className="text-base font-black text-emerald-300">{formatPrice(perMemberCost, lang)}</span>
               </div>
             </div>
@@ -279,14 +310,22 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
                 className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-white/20 transition-all"
               >
                 <Share2 className="w-3.5 h-3.5" />
-                <span>{messCopied ? '✓ কপি হয়েছে!' : 'মেস হোয়াটসঅ্যাপে শেয়ার'}</span>
+                <span>
+                  {messCopied
+                    ? lang === 'bn'
+                      ? '✓ কপি হয়েছে!'
+                      : '✓ Copied!'
+                    : lang === 'bn'
+                    ? 'মেস হোয়াটসঅ্যাপে শেয়ার'
+                    : 'Share to WhatsApp'}
+                </span>
               </button>
 
               <button
                 onClick={handleApplyMessToBasket}
                 className="flex-1 md:flex-initial px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/30 transition-all"
               >
-                <span>মেস বাজার লোড করুন</span>
+                <span>{lang === 'bn' ? 'মেস বাজার লোড করুন' : 'Load Mess Basket'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -308,7 +347,7 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
             </div>
 
             <div className="flex items-center gap-3">
-              <label className="text-xs font-bold text-blue-900">কর্মী সংখ্যা:</label>
+              <label className="text-xs font-bold text-blue-900">{lang === 'bn' ? 'কর্মী সংখ্যা:' : 'Staff Size:'}</label>
               <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-xl border border-blue-200">
                 {[15, 25, 50, 100].map((count) => (
                   <button
@@ -330,12 +369,14 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
             <div className="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 space-y-4 shadow-sm">
               <h5 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-indigo-600" />
-                <span>কোম্পানি তথ্য ও ভ্যাট চালান</span>
+                <span>{lang === 'bn' ? 'কোম্পানি তথ্য ও ভ্যাট চালান' : 'Company Details & VAT Invoice'}</span>
               </h5>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-bold text-slate-600 block mb-1">প্রতিষ্ঠানের নাম:</label>
+                  <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                    {lang === 'bn' ? 'প্রতিষ্ঠানের নাম:' : 'Organization Name:'}
+                  </label>
                   <input
                     type="text"
                     value={companyName}
@@ -344,7 +385,9 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-600 block mb-1">BIN / TIN নম্বর:</label>
+                  <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                    {lang === 'bn' ? 'BIN / TIN নম্বর:' : 'BIN / TIN Number:'}
+                  </label>
                   <input
                     type="text"
                     value={binNumber}
@@ -357,26 +400,46 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
               {/* Monthly Office Consumption List */}
               <div className="border-t border-slate-100 pt-3">
                 <span className="text-xs font-bold text-slate-700 block mb-2">
-                  {formatNumber(staffCount, lang)} জন কর্মীর মাসিক গড় অফিস প্যান্ট্রি প্রয়োজন:
+                  {lang === 'bn'
+                    ? `${formatNumber(staffCount, lang)} জন কর্মীর মাসিক গড় অফিস প্যান্ট্রি প্রয়োজন:`
+                    : `Monthly pantry quota for ${formatNumber(staffCount, lang)} staff:`}
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    ☕ ইস্পাহানি চা: <span className="font-bold">{formatNumber(teaPacks, lang)} প্যাক</span>
+                    {lang === 'bn' ? '☕ ইস্পাহানি চা:' : '☕ Ispahani Tea:'}{' '}
+                    <span className="font-bold">
+                      {formatNumber(teaPacks, lang)} {lang === 'bn' ? 'প্যাক' : 'packs'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🥛 ডানো মিল্ক: <span className="font-bold">{formatNumber(milkPacks, lang)} কেজি</span>
+                    {lang === 'bn' ? '🥛 ডানো মিল্ক:' : '🥛 Dano Milk:'}{' '}
+                    <span className="font-bold">
+                      {formatNumber(milkPacks, lang)} {lang === 'bn' ? 'কেজি' : 'kg'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🍚 ফ্রেশ চিনি: <span className="font-bold">{formatNumber(sugarKg, lang)} কেজি</span>
+                    {lang === 'bn' ? '🍚 ফ্রেশ চিনি:' : '🍚 Fresh Sugar:'}{' '}
+                    <span className="font-bold">
+                      {formatNumber(sugarKg, lang)} {lang === 'bn' ? 'কেজি' : 'kg'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🧻 বসুন্ধরা টিস্যু: <span className="font-bold">{formatNumber(tissueBoxes, lang)} বক্স</span>
+                    {lang === 'bn' ? '🧻 বসুন্ধরা টিস্যু:' : '🧻 Bashundhara Tissue:'}{' '}
+                    <span className="font-bold">
+                      {formatNumber(tissueBoxes, lang)} {lang === 'bn' ? 'বক্স' : 'boxes'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🍪 কুকিজ ও বিস্কুট: <span className="font-bold">{formatNumber(biscuitsPacks, lang)} প্যাক</span>
+                    {lang === 'bn' ? '🍪 কুকিজ ও বিস্কুট:' : '🍪 Cookies & Biscuits:'}{' '}
+                    <span className="font-bold">
+                      {formatNumber(biscuitsPacks, lang)} {lang === 'bn' ? 'প্যাক' : 'packs'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    🧴 হারপিক ও ফ্লোর ক্লিনার: <span className="font-bold">{formatNumber(cleanerPacks, lang)} প্যাক</span>
+                    {lang === 'bn' ? '🧴 হারপিক ও ফ্লোর ক্লিনার:' : '🧴 Harpic & Cleaners:'}{' '}
+                    <span className="font-bold">
+                      {formatNumber(cleanerPacks, lang)} {lang === 'bn' ? 'প্যাক' : 'packs'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -385,34 +448,40 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
             {/* Corporate Invoice / Net-30 Approval */}
             <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 to-indigo-950 p-6 rounded-3xl text-white shadow-xl space-y-4">
               <div className="flex items-center justify-between border-b border-indigo-800/80 pb-3">
-                <span className="text-xs font-bold text-indigo-300">আনুষ্ঠানিক কোটেশন সামারি</span>
+                <span className="text-xs font-bold text-indigo-300">
+                  {lang === 'bn' ? 'আনুষ্ঠানিক কোটেশন সামারি' : 'Official Quotation Summary'}
+                </span>
                 <span className="text-[11px] bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">
-                  Net-30 অনুমোদনযোগ্য
+                  {lang === 'bn' ? 'Net-30 অনুমোদনযোগ্য' : 'Net-30 Eligible'}
                 </span>
               </div>
 
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between text-indigo-200">
-                  <span>প্যান্ট্রি সাবটোটাল:</span>
+                  <span>{lang === 'bn' ? 'প্যান্ট্রি সাবটোটাল:' : 'Pantry Subtotal:'}</span>
                   <span className="font-bold">{formatPrice(corporateSubtotal, lang)}</span>
                 </div>
                 <div className="flex justify-between text-indigo-200">
-                  <span>সরকারি ভ্যাট (৫%):</span>
+                  <span>{lang === 'bn' ? 'সরকারি ভ্যাট (৫%):' : 'Govt VAT (5%):'}</span>
                   <span className="font-bold">{formatPrice(corporateVat, lang)}</span>
                 </div>
                 <div className="flex justify-between text-indigo-200">
-                  <span>ডেলিভারি (ঢাকা মেট্রো):</span>
-                  <span className="text-emerald-400 font-bold uppercase">ফ্রি বাল্ক ডেলিভারি</span>
+                  <span>{lang === 'bn' ? 'ডেলিভারি (ঢাকা মেট্রো):' : 'Delivery (Dhaka Metro):'}</span>
+                  <span className="text-emerald-400 font-bold uppercase">
+                    {lang === 'bn' ? 'ফ্রি বাল্ক ডেলিভারি' : 'Free Bulk Delivery'}
+                  </span>
                 </div>
                 <div className="flex justify-between text-base font-black text-white pt-2 border-t border-indigo-800">
-                  <span>সর্বমোট বিল:</span>
+                  <span>{lang === 'bn' ? 'সর্বমোট বিল:' : 'Total Payable:'}</span>
                   <span className="text-emerald-300">{formatPrice(corporateTotal, lang)}</span>
                 </div>
               </div>
 
               {corporateOrderSubmitted ? (
                 <div className="bg-emerald-500/20 border border-emerald-500/40 rounded-xl p-3 text-center text-xs text-emerald-300 font-semibold">
-                  ✓ কর্পোরেট কোটেশন ও ভ্যাট চালান আবেদন গৃহিত হয়েছে। আপনার সাথে আমাদের কী-অ্যাকাউন্ট ম্যানেজার যোগাযোগ করবেন।
+                  {lang === 'bn'
+                    ? '✓ কর্পোরেট কোটেশন ও ভ্যাট চালান আবেদন গৃহিত হয়েছে। আপনার সাথে আমাদের কী-অ্যাকাউন্ট ম্যানেজার যোগাযোগ করবেন।'
+                    : '✓ Corporate quotation & VAT invoice requested. Our Key Account Manager will contact you shortly.'}
                 </div>
               ) : (
                 <div className="space-y-2 pt-2">
@@ -421,10 +490,12 @@ export const B2bCorporateMess: React.FC<B2bCorporateMessProps> = ({
                     className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all"
                   >
                     <FileText className="w-4 h-4" />
-                    <span>কর্পোরেট ইনভয়েস অনুমোদন করুন</span>
+                    <span>{lang === 'bn' ? 'কর্পোরেট ইনভয়েস অনুমোদন করুন' : 'Approve Corporate Invoice'}</span>
                   </button>
                   <p className="text-[10px] text-center text-indigo-300">
-                    *মুশক-৬.৩ চালান সরাসরি অ্যাকাউন্টিং ইমেইলে পাঠানো হবে।
+                    {lang === 'bn'
+                      ? '*মুশক-৬.৩ চালান সরাসরি অ্যাকাউন্টিং ইমেইলে পাঠানো হবে।'
+                      : '*Mushak-6.3 VAT invoice will be dispatched directly to your accounting email.'}
                   </p>
                 </div>
               )}

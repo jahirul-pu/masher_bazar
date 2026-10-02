@@ -6,6 +6,8 @@
   "packageManager": "pnpm@11.2.2",
   "scripts": {
     "build": "turbo run build",
+    "build:web": "turbo run build --filter=@masik/web...",
+    "build:admin": "turbo run build --filter=@masik/admin...",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",

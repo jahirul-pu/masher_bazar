@@ -190,9 +190,18 @@ export default function HomePage() {
         if (stored) {
           const parsed: InventoryItem[] = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            const defaultIds = new Set(DEFAULT_INVENTORY_PRODUCTS.map((p) => p.id));
-            const customOnly = parsed.filter((p) => !defaultIds.has(p.id));
-            setInventoryCatalog([...DEFAULT_INVENTORY_PRODUCTS, ...customOnly]);
+            const defaultMap = new Map(DEFAULT_INVENTORY_PRODUCTS.map((p) => [p.id, p]));
+            const merged = parsed.map((item) => {
+              const def = defaultMap.get(item.id);
+              return def ? { ...def, ...item } : item;
+            });
+            const mergedIds = new Set(merged.map((m) => m.id));
+            for (const def of DEFAULT_INVENTORY_PRODUCTS) {
+              if (!mergedIds.has(def.id)) {
+                merged.push(def);
+              }
+            }
+            setInventoryCatalog(merged);
           }
         }
       } catch {
@@ -233,33 +242,51 @@ export default function HomePage() {
 
   // Budget Optimization Solver (Section 11, 12 & 13 of PRD)
   const handleOptimizeBudget = () => {
+    let actuallySwapped = 0;
     // Swaps branded products to Masher Essentials high-quality equivalents
     const optimized = basketItems.map((item) => {
       if (item.variantId === 'v-oil-rup-5l') {
+        actuallySwapped++;
         return {
           ...item,
           variantId: 'v-oil-mb-5l',
           nameEn: 'Masher Essentials Fortified Soybean Oil',
           nameBn: 'মাসের বাজার এসেনশিয়ালস সয়াবিন তেল ৫লি',
           unitMasikPrice: 775, // saves ৳40
+          unitMrp: 860,
         };
       }
       if (item.variantId === 'v-rice-chashi-25k') {
+        actuallySwapped++;
         return {
           ...item,
           variantId: 'v-rice-mb-25k',
           nameEn: 'Masher Essentials Miniket Rice 25kg',
           nameBn: 'মাসের বাজার এসেনশিয়ালস মিনিকেট চাল ২৫ কেজি',
           unitMasikPrice: 1890, // saves ৳90
+          unitMrp: 2100,
         };
       }
       if (item.variantId === 'v-dal-aci-2k') {
+        actuallySwapped++;
         return {
           ...item,
           variantId: 'v-dal-mb-2k',
           nameEn: 'Masher Essentials Desi Masoor Dal 2kg',
           nameBn: 'মাসের বাজার এসেনশিয়ালস দেশি মসুর ডাল ২ কেজি',
-          unitMasikPrice: 290, // saves ৳20 x 2 = ৳40
+          unitMasikPrice: 285, // saves ৳25 x 2 = ৳50
+          unitMrp: 330,
+        };
+      }
+      if (item.variantId === 'v-flour-fresh-5k') {
+        actuallySwapped++;
+        return {
+          ...item,
+          variantId: 'v-flour-mb-5k',
+          nameEn: 'Masher Essentials Brown Atta 5kg',
+          nameBn: 'মাসের বাজার এসেনশিয়ালস লাল আটা ৫ কেজি',
+          unitMasikPrice: 275, // saves ৳20
+          unitMrp: 310,
         };
       }
       return item;
@@ -267,7 +294,7 @@ export default function HomePage() {
 
     setBasketItems(optimized);
     setIsBudgetOptimized(true);
-    setSwappedCount(3);
+    setSwappedCount(actuallySwapped);
   };
 
   // AI Prompt Handler
@@ -279,30 +306,73 @@ export default function HomePage() {
     if (prompt.includes('৫ হাজার') || prompt.includes('5000')) budget = 5000;
     if (prompt.includes('৭ হাজার') || prompt.includes('7000')) budget = 7000;
 
+    const pref = prompt.includes('রুটি')
+      ? FoodPreference.ROTI_HEAVY
+      : prompt.includes('ভাত')
+      ? FoodPreference.RICE_HEAVY
+      : FoodPreference.STANDARD;
+
     setOnboarding((prev) => ({
       ...prev,
       size,
       budget,
-      preference: prompt.includes('রুটি') ? FoodPreference.ROTI_HEAVY : FoodPreference.STANDARD,
+      preference: pref,
     }));
 
-    handleGenerateFromOnboarding(size);
+    handleGenerateFromOnboarding(size, pref);
   };
 
   // Generate From Wizard
-  const handleGenerateFromOnboarding = (sizeOverride?: number) => {
+  const handleGenerateFromOnboarding = (sizeOverride?: number, prefOverride?: FoodPreference) => {
     const effectiveSize = sizeOverride !== undefined ? sizeOverride : onboarding.size;
+    const effectivePref = prefOverride !== undefined ? prefOverride : onboarding.preference;
     const scale = effectiveSize / 4;
+    const isRoti = effectivePref === FoodPreference.ROTI_HEAVY;
+    const isRice = effectivePref === FoodPreference.RICE_HEAVY;
+    const isLowCooking =
+      onboarding.cookingFreq === CookingFrequency.TWO_TO_THREE_DAYS ||
+      onboarding.cookingFreq === CookingFrequency.OCCASIONALLY;
+    const cookingFactor = isLowCooking ? 0.7 : 1.0;
+
     const recalculated = initialBasketItems.map((item) => {
       let qty = item.quantity;
-      if (item.unit === 'KG' && item.unitValue <= 5) {
+      const cat = item.category;
+
+      if (cat === 'চাল') {
+        const targetKg = Math.round(effectiveSize * (isRice ? 7.0 : 5.5) * cookingFactor);
+        qty = Math.max(1, Math.round(targetKg / 25));
+      } else if (cat === 'তেল') {
+        const targetL = Math.round((1.25 + effectiveSize * 0.85) * cookingFactor);
+        qty = Math.max(1, Math.round(targetL / 5));
+      } else if (cat === 'আটা') {
+        const targetKg = Math.round(effectiveSize * (isRoti ? 3.5 : 1.5) * cookingFactor);
+        qty = Math.max(1, Math.round(targetKg / 5));
+      } else if (cat === 'ডাল') {
+        const targetKg = Math.round(effectiveSize * 0.8 * cookingFactor);
+        qty = Math.max(1, Math.round(targetKg / 2));
+      } else if (cat === 'আলু' || cat === 'পেঁয়াজ') {
+        const targetKg = Math.round(effectiveSize * 1.5 * cookingFactor);
+        qty = Math.max(1, Math.round(targetKg / 5));
+      } else if (cat === 'লবণ') {
+        qty = effectiveSize >= 6 ? 3 : effectiveSize <= 2 ? 1 : 2;
+      } else if (cat === 'চিনি') {
+        qty = effectiveSize >= 5 ? 2 : 1;
+      } else if (cat === 'ব্যক্তিগত যত্ন' || cat === 'গৃহস্থালী টিস্যু') {
+        qty = effectiveSize >= 5 ? 2 : 1;
+      } else if (cat === 'পরিচ্ছন্নতা') {
+        qty = effectiveSize >= 5 ? 2 : 1;
+      } else if (cat === 'মসলা') {
+        qty = effectiveSize >= 6 ? 2 : 1;
+      } else {
         qty = Math.max(1, Math.round(item.quantity * scale));
       }
+
       return { ...item, quantity: qty };
     });
 
     setBasketItems(recalculated);
     setIsBudgetOptimized(false);
+    setSwappedCount(0);
   };
 
   // 1-Tap Repeat Last Month (Section 20 PRD)
@@ -325,17 +395,32 @@ export default function HomePage() {
 
   // Swap / Change Product in Basket with Alternative from Inventory
   const handleSwapItem = (oldVariantId: string, newItem: DisplayBasketItem) => {
-    setBasketItems((prev) =>
-      prev.map((item) => {
+    setBasketItems((prev) => {
+      const oldItem = prev.find((i) => i.variantId === oldVariantId);
+      const preservedQty = oldItem ? oldItem.quantity : newItem.quantity;
+      const alreadyExists = prev.find((i) => i.variantId === newItem.variantId && i.variantId !== oldVariantId);
+
+      if (alreadyExists) {
+        // Merge quantities with existing entry and remove old variant
+        return prev
+          .filter((i) => i.variantId !== oldVariantId)
+          .map((i) =>
+            i.variantId === newItem.variantId
+              ? { ...i, quantity: i.quantity + preservedQty }
+              : i
+          );
+      }
+
+      return prev.map((item) => {
         if (item.variantId === oldVariantId) {
           return {
             ...newItem,
-            quantity: item.quantity, // Preserve user's calibrated quantity
+            quantity: preservedQty,
           };
         }
         return item;
-      })
-    );
+      });
+    });
     setSwappedCount((prev) => prev + 1);
   };
 
@@ -348,20 +433,24 @@ export default function HomePage() {
   }) => {
     setBasketItems((prev) =>
       prev.map((item) => {
-        if (item.variantId === 'v-rice-chashi-25k' || item.variantId === 'v-rice-mb-25k') {
-          const sacks = Math.max(1, Math.ceil(needs.riceKg / 25));
+        if (item.category === 'চাল' || item.category.toLowerCase().includes('rice')) {
+          const unitVal = item.unitValue || 25;
+          const sacks = Math.max(1, Math.ceil(needs.riceKg / unitVal));
           return { ...item, quantity: sacks };
         }
-        if (item.variantId === 'v-oil-rup-5l' || item.variantId === 'v-oil-mb-5l') {
-          const bottles = Math.max(1, Math.ceil(needs.oilLiters / 5));
+        if (item.category === 'তেল' || item.category.toLowerCase().includes('oil')) {
+          const unitVal = item.unitValue || 5;
+          const bottles = Math.max(1, Math.ceil(needs.oilLiters / unitVal));
           return { ...item, quantity: bottles };
         }
-        if (item.variantId === 'v-dal-aci-2k' || item.variantId === 'v-dal-mb-2k') {
-          const packs = Math.max(1, Math.ceil(needs.dalKg / 2));
+        if (item.category === 'ডাল' || item.category.toLowerCase().includes('dal')) {
+          const unitVal = item.unitValue || 2;
+          const packs = Math.max(1, Math.ceil(needs.dalKg / unitVal));
           return { ...item, quantity: packs };
         }
-        if (item.variantId === 'v-flour-fresh-5k') {
-          const packs = Math.max(1, Math.ceil(needs.attaKg / 5));
+        if (item.category === 'আটা' || item.category.toLowerCase().includes('atta') || item.category.toLowerCase().includes('flour')) {
+          const unitVal = item.unitValue || 5;
+          const packs = Math.max(1, Math.ceil(needs.attaKg / unitVal));
           return { ...item, quantity: packs };
         }
         return item;

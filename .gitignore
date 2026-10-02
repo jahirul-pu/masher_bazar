@@ -31,5 +31,9 @@ Thumbs.db
 # Turborepo cache
 .turbo/
 
+# Vercel
+.vercel/
+.vercel
+
 # Coverage
 coverage/

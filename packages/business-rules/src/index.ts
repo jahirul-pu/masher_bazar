@@ -73,9 +73,19 @@ export function generateMonthlyBasket(
 
   const items: BasketItem[] = [];
 
+  const categoryAliases: Record<string, string[]> = {
+    staples_lentils: ['staples_lentils', 'lentils_dal'],
+    lentils_dal: ['staples_lentils', 'lentils_dal'],
+    cleaning_soap: ['cleaning_soap', 'personal_care'],
+    personal_care: ['cleaning_soap', 'personal_care'],
+    staples_flour: ['staples_flour', 'staples_maida'],
+    staples_maida: ['staples_flour', 'staples_maida'],
+  };
+
   const findBestVariant = (categorySlug: string, isStaple: boolean): CatalogVariantRef | undefined => {
+    const validSlugs = categoryAliases[categorySlug] || [categorySlug];
     // Prefer matching marketTier (Economy/Standard/Premium)
-    const matches = catalog.filter((c) => c.categorySlug === categorySlug && c.isStaple === isStaple);
+    const matches = catalog.filter((c) => validSlugs.includes(c.categorySlug) && c.isStaple === isStaple);
     const tierMatch = matches.find((m) => m.marketTier === household.marketTier);
     return tierMatch || matches[0];
   };
@@ -102,6 +112,7 @@ export function generateMonthlyBasket(
   addItem('grocery_sugar', sugarKgTarget);
   addItem('produce_potato', potatoKgTarget);
   addItem('produce_onion', onionKgTarget);
+  addItem('spices', 1);
   addItem('cleaning_soap', soapPcs);
   addItem('cleaning_detergent', detergentKg);
   addItem('household_tissue', tissuePacks);
@@ -212,7 +223,10 @@ export function validateMarginProtection(
   minMarginPercent: number = 8
 ): { isAllowed: boolean; minSellingPrice: number; currentMarginPercent: number } {
   const minSellingPrice = Math.round(purchaseCost * (1 + minMarginPercent / 100));
-  const currentMarginPercent = purchaseCost > 0 ? ((sellingPrice - purchaseCost) / sellingPrice) * 100 : 0;
+  const currentMarginPercent =
+    sellingPrice > 0 && purchaseCost >= 0
+      ? ((sellingPrice - purchaseCost) / sellingPrice) * 100
+      : 0;
   const isAllowed = sellingPrice >= minSellingPrice;
 
   return {

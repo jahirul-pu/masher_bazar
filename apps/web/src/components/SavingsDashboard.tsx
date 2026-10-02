@@ -55,7 +55,9 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
             <span className="text-2xl sm:text-3xl font-black text-slate-900 block">
               {lang === 'bn' ? `${toBengaliNumber(8)}টি` : '8 Orders'}
             </span>
-            <span className="text-[11px] text-emerald-600 font-bold mt-1 block">✓ ১০০% সফল ডেলিভারি</span>
+            <span className="text-[11px] text-emerald-600 font-bold mt-1 block">
+              {lang === 'bn' ? `✓ ${toBengaliNumber(100)}% সফল ডেলিভারি` : '✓ 100% On-Time Delivery'}
+            </span>
           </div>
 
           <div className="glass-card p-5 rounded-2xl border border-slate-200">
@@ -73,7 +75,9 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
               {lang === 'bn' ? 'সর্বমোট সাশ্রয়' : 'Lifetime Savings'}
             </span>
             <span className="text-2xl sm:text-3xl font-black text-emerald-700 block">{formatPrice(4180, lang)}</span>
-            <span className="text-[11px] text-emerald-700 font-bold mt-1 block">🔥 সরাসরি বাল্ক ডিসকাউন্ট</span>
+            <span className="text-[11px] text-emerald-700 font-bold mt-1 block">
+              {lang === 'bn' ? '🔥 সরাসরি বাল্ক ডিসকাউন্ট' : '🔥 Direct Bulk Discount'}
+            </span>
           </div>
 
           <div className="glass-card p-5 rounded-2xl border border-amber-200 bg-amber-50/50">
@@ -81,7 +85,9 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
               {lang === 'bn' ? 'গড় সাশ্রয় হার' : 'Average Savings Rate'}
             </span>
             <span className="text-2xl sm:text-3xl font-black text-amber-700 block">{formatNumber(8.5, lang)}%</span>
-            <span className="text-[11px] text-amber-800 font-bold mt-1 block">মার্কেট রিটেল প্রাইজ তুলনা</span>
+            <span className="text-[11px] text-amber-800 font-bold mt-1 block">
+              {lang === 'bn' ? 'মার্কেট রিটেল প্রাইজ তুলনা' : 'vs Market Retail Benchmark'}
+            </span>
           </div>
         </div>
 
@@ -128,7 +134,7 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
                   {lang === 'bn' ? 'মার্কেট ক্রেডিট ওয়ালেট (Section 65)' : 'Market Credits Wallet'}
                 </span>
                 <span className="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-lg">
-                  ✓ সক্রিয়
+                  {lang === 'bn' ? '✓ সক্রিয়' : '✓ Active'}
                 </span>
               </div>
 
@@ -152,7 +158,9 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
             </div>
 
             <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/80 flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-700">লাইফটাইম অর্জিত ক্রেডিট:</span>
+              <span className="font-semibold text-slate-700">
+                {lang === 'bn' ? 'লাইফটাইম অর্জিত ক্রেডিট:' : 'Lifetime Earned Credits:'}
+              </span>
               <span className="font-extrabold text-amber-900">{formatPrice(480, lang)}</span>
             </div>
           </div>
@@ -186,30 +194,36 @@ export const SavingsDashboard: React.FC<SavingsDashboardProps> = ({
             <div className="space-y-3 bg-white/10 p-4 rounded-2xl border border-white/20 backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-emerald-200 uppercase font-bold block">আপনার রেফারেল কোড</span>
-                  <span className="text-base font-black text-white tracking-widest">MASHER-DHAKA-26</span>
+                  <span className="text-[10px] text-emerald-200 uppercase font-bold block">
+                    {lang === 'bn' ? 'আপনার রেফারেল কোড' : 'YOUR REFERRAL CODE'}
+                  </span>
+                  <span className="text-base font-black text-white tracking-widest font-mono">MASHER-DHAKA-26</span>
                 </div>
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText('https://masherbazar.com/ref/MASHER-DHAKA-26');
+                    if (navigator?.clipboard?.writeText) {
+                      navigator.clipboard.writeText('https://masherbazar.com/ref/MASHER-DHAKA-26').catch(() => {});
+                    }
                     alert(lang === 'bn' ? 'রেফারেল লিঙ্ক কপি হয়েছে!' : 'Referral link copied!');
                   }}
                   className="px-3 py-1.5 rounded-xl bg-white text-emerald-900 font-bold text-xs hover:bg-emerald-50 transition-colors shadow-sm"
                 >
-                  লিঙ্ক কপি করুন
+                  {lang === 'bn' ? 'লিঙ্ক কপি করুন' : 'Copy Link'}
                 </button>
               </div>
 
               <button
                 onClick={() => {
                   const msg = encodeURIComponent(
-                    'মাসের বাজার থেকে পাইকারি রেটে পুরো মাসের গ্রোসারি কিনুন এবং প্রথম অর্ডারে ৳১০০ ছাড় পান! কোড: MASHER-DHAKA-26 https://masherbazar.com/ref/MASHER-DHAKA-26'
+                    lang === 'bn'
+                      ? 'মাসের বাজার থেকে পাইকারি রেটে পুরো মাসের গ্রোসারি কিনুন এবং প্রথম অর্ডারে ৳১০০ ছাড় পান! কোড: MASHER-DHAKA-26 https://masherbazar.com/ref/MASHER-DHAKA-26'
+                      : 'Stock up your full monthly grocery at wholesale bulk rates from Masher Bazar and get ৳100 off your first order! Code: MASHER-DHAKA-26 https://masherbazar.com/ref/MASHER-DHAKA-26'
                   );
                   window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
                 }}
                 className="w-full py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all shadow-md"
               >
-                <span>💬 হোয়াটসঅ্যাপে শেয়ার করুন</span>
+                <span>{lang === 'bn' ? '💬 হোয়াটসঅ্যাপে শেয়ার করুন' : '💬 Share on WhatsApp'}</span>
               </button>
             </div>
           </div>
